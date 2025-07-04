@@ -1,0 +1,5 @@
+openai
+python-dotenv
+picamera2
+requests
+sip

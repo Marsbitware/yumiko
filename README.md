@@ -213,6 +213,11 @@ sudo systemctl enable start_camera.service
 sudo reboot
 ```
 
+### Killing the Process if necessary
+pkill -f camera.py
+pkill -f server.py
+
+
 ### Additional notes
 Gallery and style assets are located in ~/camera_app/assets/
 Photos and stylized images are saved in ~/camera_app/photos/

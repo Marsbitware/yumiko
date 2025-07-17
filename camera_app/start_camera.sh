@@ -1,13 +1,12 @@
-#Den nachfolgenden Code in die Datei start_camera.sh einfügen
 nano ~/camera_app/start_camera.sh
 
 
 #!/bin/bash
-# Virtuelle Umgebung aktivieren
+# activate virtual environment
 source ~/venv/bin/activate
-# Korrektes Display setzen
+# ste the right display
 export DISPLAY=:0
-# Python-Skript ausführen
+# execute Python-Script
 python3 ~/camera_app/camera.py &
-#Pyhton Server starten
+# start Pyhton Server 
 python3 ~/camera_app/server.py

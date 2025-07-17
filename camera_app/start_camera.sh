@@ -8,4 +8,6 @@ source ~/venv/bin/activate
 # Korrektes Display setzen
 export DISPLAY=:0
 # Python-Skript ausführen
-python3 ~/camera_app/camera.py
+python3 ~/camera_app/camera.py &
+#Pyhton Server starten
+python3 ~/camera_app/server.py

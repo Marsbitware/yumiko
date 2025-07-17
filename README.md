@@ -23,6 +23,7 @@ yumiko/
 ├── camera_app/
 │   ├── camera.py             ← Main application
 │   ├── start_camera.sh       ← Start script (for autostart)
+│   ├── server.py             ← Start script (for flask-server)
 │   ├── assets/
 │   │   ├── icons/            ← Gallery, QR, magic wand icons, GIFs, etc.
 │   │   ├── styles/           ← Style image buttons
@@ -171,19 +172,7 @@ OPENAI_API_KEY=<your_api_key>
 ### Make script executable:
 ```
 chmod +x ~/camera_app/camera.py
-```
-
-### Setup start script and autostart
-Create start script start_camera.sh:
-```
-#!/bin/bash
-source ~/venv/bin/activate
-export DISPLAY=:0
-python3 ~/camera_app/camera.py
-```
-
-### Make script executable:
-```
+chmod +x ~/camera_app/server.py
 chmod +x ~/camera_app/start_camera.sh
 ```
 ### Create systemd service:
@@ -214,9 +203,10 @@ sudo reboot
 ```
 
 ### Killing the Process if necessary
+```
 pkill -f camera.py
 pkill -f server.py
-
+```
 
 ### Additional notes
 Gallery and style assets are located in ~/camera_app/assets/

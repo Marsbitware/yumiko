@@ -6,6 +6,7 @@ import shutil
 import base64
 import requests
 import io
+import qrcode
 import RPi.GPIO as GPIO
 from dotenv import load_dotenv
 from PIL import Image
@@ -19,6 +20,8 @@ from PyQt5.QtCore import (
 )
 from PyQt5.QtGui import QImage, QPixmap, QIcon, QTransform, QMovie
 from openai import OpenAI
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import Qt
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -112,6 +115,8 @@ class StyleTransferTask(QRunnable):
         except Exception as e:
             self.signals.finished.emit(None, str(e), self.style_name)
 
+FLASK_SERVER = "http://192.168.178.83:5000"  # ❗ Deine Pi-IP hier eintragen
+
 class CameraApp(QWidget):
     gpio_button_pressed = pyqtSignal()
 
@@ -195,6 +200,25 @@ class CameraApp(QWidget):
             self.return_to_camera()
         elif self.current_mode == "camera":
             self.take_photo()
+
+    
+    def handle_back_or_photo(self):
+        print(f"[BUTTON] Current mode: {self.current_mode}")
+        if self.current_mode == "style_overlay":
+            self.open_gallery()
+        elif self.current_mode == "qr_overlay":
+            self.open_gallery()
+        elif self.current_mode == "gallery":
+            self.return_to_camera()
+        elif self.current_mode == "camera":
+            self.take_photo()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            print("[KEY] ESC pressed")
+            if self.current_mode in ["gallery", "qr_overlay", "style_overlay"]:
+                self.return_to_camera()
+
 
     def update_preview(self):
         frame = self.picam2.capture_array()
@@ -344,7 +368,47 @@ class CameraApp(QWidget):
             self.show_current_image()
 
     def show_qr_overlay(self):
-        print("[QR] Showing QR code (placeholder)")
+        # Sicherstellen, dass Bild vorhanden ist
+        if not hasattr(self, "current_image_path") or not self.current_image_path:
+            print("[QR] Kein aktuelles Bild gefunden.")
+            return
+
+        filename = os.path.basename(self.current_image_path)
+        qr_url = f"{FLASK_SERVER}/view/{filename}"  # QR zeigt auf HTML-Seite mit Downloadbutton
+
+        print(f"[QR] Generiere QR für: {qr_url}")
+        qr = qrcode.QRCode(border=2, box_size=8)
+        qr.add_data(qr_url)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        qt_img = QImage.fromData(buf.getvalue())
+
+        # Overlay erstellen
+        overlay = QWidget(self)
+        overlay.setGeometry(0, 0, self.width(), self.height())
+        overlay.setStyleSheet("background-color: rgba(0,0,0,180);")
+        overlay.setAttribute(Qt.WA_DeleteOnClose)
+        overlay.raise_()
+
+        # QR-Code anzeigen
+        qr_label = QLabel(overlay)
+        qr_pixmap = QPixmap.fromImage(qt_img).scaled(240, 240, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        qr_label.setPixmap(qr_pixmap)
+        qr_label.setGeometry((overlay.width() - 240) // 2, 60, 240, 240)
+        qr_label.show()
+
+        # Infotext darunter
+        txt = QLabel("📱 Scan den QR-Code\num das Foto anzuzeigen & herunterzuladen", overlay)
+        txt.setStyleSheet("color: white; font-size: 16px; font-weight: bold;")
+        txt.setAlignment(Qt.AlignCenter)
+        txt.setGeometry((overlay.width() - 300) // 2, 320, 300, 40)
+        txt.show()
+
+        overlay.show()
+
         self.current_mode = "qr_overlay"
 
     def show_style_overlay(self):
@@ -533,6 +597,9 @@ class CameraApp(QWidget):
         event.accept()
 
 if __name__ == "__main__":
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    
     app = QApplication(sys.argv)
     window = CameraApp()
     window.show()

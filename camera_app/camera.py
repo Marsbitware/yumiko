@@ -368,13 +368,13 @@ class CameraApp(QWidget):
             self.show_current_image()
 
     def show_qr_overlay(self):
-        # Sicherstellen, dass Bild vorhanden ist
+        # Make sure the picture aviable
         if not hasattr(self, "current_image_path") or not self.current_image_path:
             print("[QR] Kein aktuelles Bild gefunden.")
             return
 
         filename = os.path.basename(self.current_image_path)
-        qr_url = f"{FLASK_SERVER}/view/{filename}"  # QR zeigt auf HTML-Seite mit Downloadbutton
+        qr_url = f"{FLASK_SERVER}/view/{filename}"  # QR points to HTML Website with picture and Downloadbutton
 
         print(f"[QR] Generiere QR für: {qr_url}")
         qr = qrcode.QRCode(border=2, box_size=8)
@@ -386,21 +386,21 @@ class CameraApp(QWidget):
         img.save(buf, format="PNG")
         qt_img = QImage.fromData(buf.getvalue())
 
-        # Overlay erstellen
+        # Create Overlay
         overlay = QWidget(self)
         overlay.setGeometry(0, 0, self.width(), self.height())
         overlay.setStyleSheet("background-color: rgba(0,0,0,180);")
         overlay.setAttribute(Qt.WA_DeleteOnClose)
         overlay.raise_()
 
-        # QR-Code anzeigen
+        # Show QR-Code
         qr_label = QLabel(overlay)
         qr_pixmap = QPixmap.fromImage(qt_img).scaled(240, 240, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         qr_label.setPixmap(qr_pixmap)
         qr_label.setGeometry((overlay.width() - 240) // 2, 60, 240, 240)
         qr_label.show()
 
-        # Infotext darunter
+        # Display Info
         txt = QLabel("📱 Scan den QR-Code\num das Foto anzuzeigen & herunterzuladen", overlay)
         txt.setStyleSheet("color: white; font-size: 16px; font-weight: bold;")
         txt.setAlignment(Qt.AlignCenter)

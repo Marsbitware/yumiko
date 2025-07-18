@@ -115,7 +115,7 @@ class StyleTransferTask(QRunnable):
         except Exception as e:
             self.signals.finished.emit(None, str(e), self.style_name)
 
-FLASK_SERVER = "http://192.168.178.83:5000"  # ❗ Deine Pi-IP hier eintragen
+FLASK_SERVER = "http://192.168.50.1:5000"  # ❗ Deine Pi-IP hier eintragen
 
 class CameraApp(QWidget):
     gpio_button_pressed = pyqtSignal()

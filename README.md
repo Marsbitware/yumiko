@@ -49,6 +49,7 @@ yumiko/
     - M2.5 x 4 mm screws, 4 pcs (for front camera attachment)
     - M2 x 5 mm screws, 2 pcs (for bottom plate)
 - 3D printed case (STL files in the corresponding directory)
+- Wireless USB Adapter (D-Link DWA-131 N300)
 
 ## Assembly
 (tbd)
@@ -207,6 +208,196 @@ sudo reboot
 pkill -f camera.py
 pkill -f server.py
 ```
+
+### Creating the Hotspot
+1. Drivers
+1.1 Downloading
+```
+sudo apt update
+sudo apt install git dkms build-essential raspberrypi-kernel-headers
+```
+
+```
+cd ~
+git clone https://github.com/clnhub/rtl8192eu-linux.git
+cd rtl8192eu-linux
+```
+
+1.2 Editing Makefile
+This is how it should look before:
+```
+CONFIG_PLATFORM_I386_PC = y
+CONFIG_PLATFORM_ARM_RPI = n
+```
+
+change it to this:
+```
+CONFIG_PLATFORM_I386_PC = n
+CONFIG_PLATFORM_ARM_RPI = y
+```
+1.3
+```
+make clean
+make
+sudo make install
+```
+
+2. Configure Hotspot
+2.1
+```
+sudo apt update
+sudo apt install hostapd dnsmasq
+```
+
+2.2 dedicate IP
+go to
+```
+sudo nano /etc/systemd/network/wlan1.network
+```
+
+and put in
+
+```
+[Match]
+Name=wlan1
+
+[Network]
+Address=192.168.50.1/24
+#DHCPServer=yes
+```
+
+(IP is of course variable, 192.168.50.1/24 is just the one we used)
+
+2.4 activating and starting
+```
+sudo systemctl enable systemd-networkd
+sudo systemctl restart systemd-networkd
+```
+
+2.5 überprüfen:
+```
+sudo systemctl status systemd-networkd
+ip a show wlan1
+```
+
+following should display:
+```
+inet 192.168.50.1/24
+```
+
+3. Creating the AccessPoint
+3.1
+go to/create:
+```
+sudo nano /etc/hostapd/hostapd.conf
+```
+
+fill it with :
+```
+interface=wlan1
+driver=nl80211
+ssid=YumikoCam
+hw_mode=g
+channel=6
+wmm_enabled=0
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=yumiko123
+wpa_key_mgmt=WPA-PSK
+rsn_pairwise=CCMP
+```
+
+3.2 Path to config
+```
+sudo nano /etc/default/hostapd
+```
+
+insert/change 
+```
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+```
+
+
+3.3 enable service
+```
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+sudo systemctl start hostapd
+```
+
+3.4 Check
+```
+sudo systemctl status hostapd
+```
+
+following should display:
+```
+Active: active (running)
+wlan1: AP-ENABLED
+```
+
+4. DHCP with dnsmasq
+4.1 create config
+```
+sudo nano /etc/dnsmasq.conf
+```
+
+and insert: 
+```
+interface=wlan1
+dhcp-range=192.168.50.10,192.168.50.100,12h
+```
+(Again, IP/IP range are variable)
+
+4.2 activating and staring service
+```
+sudo systemctl enable dnsmasq
+sudo systemctl start dnsmasq
+```
+
+4.3 Check
+```
+sudo systemctl status dnsmasq
+```
+
+(optional) beides neustartenrstarting both:
+```
+sudo systemctl restart hostapd
+```
+
+and 
+```
+sudo systemctl restart dnsmasq
+```
+
+5. Test if you can see the WLAN on your phone and try connecting to it
+
+
+additional commands that could be helpful:
+stopping the services:
+```
+sudo systemctl stop hostapd
+```
+
+and 
+```
+sudo systemctl stop dnsmasq
+```
+
+starting the services:
+```
+sudo systemctl start hostapd
+```
+
+and
+```
+sudo systemctl start dnsmasq
+```
+
+### Additional: Creating QR Code for easy access to the WLAN
+
 
 ### Additional notes
 Gallery and style assets are located in ~/camera_app/assets/

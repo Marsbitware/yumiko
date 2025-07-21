@@ -209,9 +209,8 @@ pkill -f camera.py
 pkill -f server.py
 ```
 
-### Creating the Hotspot
-1. Drivers
-1.1 Downloading
+## Creating the Hotspot
+### Adding Drivers
 ```
 sudo apt update
 sudo apt install git dkms build-essential raspberrypi-kernel-headers
@@ -223,7 +222,10 @@ git clone https://github.com/clnhub/rtl8192eu-linux.git
 cd rtl8192eu-linux
 ```
 
-1.2 Editing Makefile
+Editing Makefile
+```
+/home/admin/rtl8192eu-arm-linux-driver/Makefile
+```
 This is how it should look before:
 ```
 CONFIG_PLATFORM_I386_PC = y
@@ -235,21 +237,21 @@ change it to this:
 CONFIG_PLATFORM_I386_PC = n
 CONFIG_PLATFORM_ARM_RPI = y
 ```
-1.3
+
 ```
 make clean
 make
 sudo make install
 ```
 
-2. Configure Hotspot
-2.1
+### Configure Hotspot
+Installation
 ```
 sudo apt update
 sudo apt install hostapd dnsmasq
 ```
 
-2.2 dedicate IP
+
 go to
 ```
 sudo nano /etc/systemd/network/wlan1.network
@@ -268,25 +270,13 @@ Address=192.168.50.1/24
 
 (IP is of course variable, 192.168.50.1/24 is just the one we used)
 
-2.4 activating and starting
+activating and starting
 ```
 sudo systemctl enable systemd-networkd
 sudo systemctl restart systemd-networkd
 ```
 
-2.5 überprüfen:
-```
-sudo systemctl status systemd-networkd
-ip a show wlan1
-```
-
-following should display:
-```
-inet 192.168.50.1/24
-```
-
-3. Creating the AccessPoint
-3.1
+### Creating the AccessPoint
 go to/create:
 ```
 sudo nano /etc/hostapd/hostapd.conf
@@ -309,7 +299,7 @@ wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
 ```
 
-3.2 Path to config
+Path to config
 ```
 sudo nano /etc/default/hostapd
 ```
@@ -320,26 +310,15 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 ```
 
 
-3.3 enable service
+enable service
 ```
 sudo systemctl unmask hostapd
 sudo systemctl enable hostapd
 sudo systemctl start hostapd
 ```
 
-3.4 Check
-```
-sudo systemctl status hostapd
-```
-
-following should display:
-```
-Active: active (running)
-wlan1: AP-ENABLED
-```
-
-4. DHCP with dnsmasq
-4.1 create config
+### DHCP with dnsmasq
+create config
 ```
 sudo nano /etc/dnsmasq.conf
 ```
@@ -351,52 +330,63 @@ dhcp-range=192.168.50.10,192.168.50.100,12h
 ```
 (Again, IP/IP range are variable)
 
-4.2 activating and staring service
+
+activating and staring service
 ```
 sudo systemctl enable dnsmasq
 sudo systemctl start dnsmasq
 ```
 
-4.3 Check
+
+wlan0: activate wpa_supplicant
 ```
-sudo systemctl status dnsmasq
+sudo systemctl enable wpa_supplicant@wlan0
+sudo systemctl start wpa_supplicant@wlan0
 ```
 
-(optional) beides neustartenrstarting both:
+wlan1: stop and deactivate wpa_supplicant 
 ```
+sudo systemctl stop wpa_supplicant@wlan1
+sudo systemctl disable wpa_supplicant@wlan1
+```
+
+```
+sudo nano /etc/NetworkManager/conf.d/unmanaged.conf
+```
+and insert:
+```
+[keyfile]
+unmanaged-devices=interface-name:wlan0
+```
+
+Add WiFi
+```
+sudo nano /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+```
+
+and insert:
+```
+country=DE
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+    ssid="SSID"
+    psk="PWD..."
+    key_mgmt=WPA-PSK
+}
+```
+
+Restart everything
+```
+sudo systemctl restart NetworkManager
+sudo systemctl enable --now wpa_supplicant@wlan0
+sudo systemctl restart dnsmasq
 sudo systemctl restart hostapd
 ```
 
-and 
-```
-sudo systemctl restart dnsmasq
-```
 
-5. Test if you can see the WLAN on your phone and try connecting to it
-
-
-additional commands that could be helpful:
-stopping the services:
-```
-sudo systemctl stop hostapd
-```
-
-and 
-```
-sudo systemctl stop dnsmasq
-```
-
-starting the services:
-```
-sudo systemctl start hostapd
-```
-
-and
-```
-sudo systemctl start dnsmasq
-```
-
-### Additional: Creating QR Code for easy access to the WLAN
+### Additional: Creating QR Code for easy access to the WiFi
 
 
 ### Additional notes
@@ -411,4 +401,3 @@ Source and attribution details:
 - [Icon: QR Code](https://www.iconfinder.com/icons/4243314/ux_code_app_qr_icon)
 - [Icon: Galery](https://www.iconfinder.com/icons/4706692/camera_equipment_gallery_photography_picture_icon)
 - [Icon: Trashcan](https://www.iconfinder.com/icons/8664938/trash_can_delete_remove_icon)
-

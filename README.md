@@ -150,7 +150,7 @@ libcamera-hello -t 0 --autofocus-mode continuous --qt-preview
 Install system packages:
 ```
 sudo apt update
-sudo apt install -y python3-pyqt5 python3-opencv libqt5gui5 libqt5widgets5 libqt5core5a libqt5network5 libjpeg-dev libatlas-base-dev
+sudo apt install -y python3-pyqt5 python3-opencv libqt5gui5 libqt5widgets5 libqt5core5a libqt5network5 libjpeg-dev libatlas-base-dev git dkms build-essential raspberrypi-kernel-headers hostapd dnsmasq
 ```
 
 ### Install Yumiko app
@@ -212,11 +212,6 @@ pkill -f server.py
 ## Creating the Hotspot
 ### Adding Drivers
 ```
-sudo apt update
-sudo apt install git dkms build-essential raspberrypi-kernel-headers
-```
-
-```
 cd ~
 git clone https://github.com/clnhub/rtl8192eu-linux.git
 cd rtl8192eu-linux
@@ -224,7 +219,7 @@ cd rtl8192eu-linux
 
 Editing Makefile
 ```
-/home/admin/rtl8192eu-arm-linux-driver/Makefile
+sudo nano /home/admin/rtl8192eu-arm-linux-driver/Makefile
 ```
 This is how it should look before:
 ```
@@ -245,13 +240,6 @@ sudo make install
 ```
 
 ### Configure Hotspot
-Installation
-```
-sudo apt update
-sudo apt install hostapd dnsmasq
-```
-
-
 go to
 ```
 sudo nano /etc/systemd/network/wlan1.network

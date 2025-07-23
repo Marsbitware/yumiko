@@ -8,12 +8,12 @@ echo "waiting for wlan0..."
 while ! ip link show wlan0 | grep -q "state UP"; do
     sleep 1
 done
-echo "wlan0 ist active."
+echo "wlan0 is active."
 
 echo "requesting IP..."
 sudo dhclient wlan0
 
-echo "starting dnsmasq und hostapd..."
+echo "starting dnsmasq and hostapd..."
 sudo systemctl stop dnsmasq
 sudo systemctl stop hostapd
 sudo systemctl start dnsmasq

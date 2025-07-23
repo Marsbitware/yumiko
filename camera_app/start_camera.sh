@@ -23,7 +23,7 @@ sleep 2
 sudo dhclient wlan0
 
 echo "starting camera.py..."
-python3 ~/camera_app/camera.py &
+python3 ~/yumiko/camera_app/camera.py &
 
 echo "starting server.py..."
-python3 ~/camera_app/server.py
+python3 ~/yumiko/camera_app/server.py

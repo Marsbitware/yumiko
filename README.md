@@ -137,7 +137,7 @@ libcamera-hello -t 0 --autofocus-mode continuous --qt-preview
 
 ```
 git clone https://github.com/Marsbitware/yumiko.git
-cd yumiko/camera_app
+cd yumiko/
 python3 -m venv venv --system-site-packages
 source venv/bin/activate
 pip install --upgrade pip

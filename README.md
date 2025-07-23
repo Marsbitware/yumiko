@@ -3,6 +3,10 @@
 Yumiko is an AI-powered camera app for the Raspberry Pi, featuring live preview, AI style transfer, gallery navigation, QR code export, and a fullscreen GUI for touchscreens.  
 Designed for Pi 4 with Raspberry Pi Camera v3 and a 3.5" LCD touchscreen.
 
+Inspiration:
+  - [pi-camera](https://github.com/geerlingguy/pi-camera) by [Jeff Geerling](https://github.com/geerlingguy/)
+  - [PIKON Camera](https://www.kevsrobots.com/blog/pikon-camera.html) by [Kevin McAleer](https://www.kevsrobots.com)
+
 ---
 
 ## Features
@@ -17,15 +21,46 @@ Designed for Pi 4 with Raspberry Pi Camera v3 and a 3.5" LCD touchscreen.
 
 ---
 
-## Requirements
+### Directory Structure
+```
+yumiko/
+├── camera_app/
+│   ├── camera.py             ← Main application
+│   ├── start_camera.sh       ← Start script (for autostart)
+│   ├── server.py             ← Start script (for flask-server)
+│   ├── assets/
+│   │   ├── icons/            ← Gallery, QR, magic wand icons, GIFs, etc.
+│   │   ├── styles/           ← Style image buttons
+│   │   └── test/             ← Test images or debug material
+│   └── photos/               ← Photos + stylized images
+├── requirements.txt          ← Python dependencies
+├── .gitignore                ← Ignored files/folders
+├── README.md                 ← This file
+```
 
-- Raspberry Pi 4 Model B (2GB RAM+)
-- Raspberry Pi Camera v3 (other modules may work)
-- 3.5" GPIO LCD touchscreen (in our case: Joy-IT)
+---
+
+## Requirements
+- Verified OpenAI account with sufficient funds available and a valid API key
+- Raspberry Pi 4 model B (2 GB RAM or better)
+- Raspberry Pi Camera v3 (other camera modules should work too)
+- 3.5 inch GPIO LCD touchscreen (in our case: Joy-IT model)
 - Raspberry Pi OS (Debian Bookworm 64-bit)
-- OpenAI API key (with credits)
-- microSD card, USB-C powerbank, push button, headers, screws, 3D-printed case
+- microSD card
+- 12mm push button
+- 2x4 2.54 mm female headers
+- USB-C powerbank and USB-C cable to power the Pi
+- Screws and nuts:
+    - M2.5 x 12 mm, 4 pcs, each with nut (for Pi)
+    - M2.5 x 4 mm screws, 4 pcs (for front camera attachment)
+    - M2 x 5 mm screws, 2 pcs (for bottom plate)
+- 3D printed case (STL files in the corresponding directory)
 - Wireless USB Adapter (in our case: D-Link DWA-131 N300)
+
+---
+
+## Assembly
+(tbd)
 
 ---
 
@@ -38,7 +73,7 @@ Designed for Pi 4 with Raspberry Pi Camera v3 and a 3.5" LCD touchscreen.
 
 ### 2. First Boot & Basic Setup
 
-```sh
+```
 # Connect via SSH
 ssh admin@<IP-address>
 
@@ -54,18 +89,24 @@ sudo raspi-config  # Interface Options → VNC → Enable
 
 ### 3. Display Driver
 
-```sh
+```
 git clone https://github.com/goodtft/LCD-show.git
 chmod -R 755 LCD-show
 cd LCD-show
 sudo ./LCD35-show
 # (Reboots automatically)
 ```
-- To rotate display: `./rotate.sh 180` (or 90/270)
+
+To rotate display:
+```
+cd LCD-show
+./rotate.sh 180 (or 90/270)
+```
 
 ### 4. Touchscreen Calibration
 
-```sh
+```
+sudo rm /etc/X11/xorg.conf.d/99-calibration.conf
 sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
 ```
 Insert:
@@ -78,20 +119,23 @@ Section "InputClass"
     Option  "TransformationMatrix" "0 -1 1 -1 0 1 0 0 1"
 EndSection
 ```
-- Adjust values as needed, then reboot: `sudo reboot`
+Then:
+```
+sudo reboot
+```
 
 ### 5. Camera Setup
 
 - Connect the camera as per manufacturer instructions.
 - Test with:
-```sh
+```
 export DISPLAY=:0
 libcamera-hello -t 0 --autofocus-mode continuous --qt-preview
 ```
 
 ### 6. Clone & Install Yumiko
 
-```sh
+```
 git clone https://github.com/Marsbitware/yumiko.git
 cd yumiko/camera_app
 python3 -m venv venv --system-site-packages
@@ -102,21 +146,23 @@ pip install -r requirements.txt
 
 ### 7. Configure OpenAI API Key
 
-```sh
-nano ~/camera_app/.env
-# Add:
+```
+nano ~/yumiko/camera_app/.env
+```
+Add:
+```
 OPENAI_API_KEY=<your_api_key>
 ```
 
 ### 8. Make Scripts Executable
 
-```sh
-chmod +x ~/camera_app/camera.py ~/camera_app/server.py ~/camera_app/start_camera.sh
+```
+chmod +x ~/yumiko/camera_app/camera.py ~/yumiko/camera_app/server.py ~/yumiko/camera_app/start_camera.sh
 ```
 
 ### 9. Autostart with systemd
 
-```sh
+```
 sudo nano /etc/systemd/system/start_camera.service
 ```
 Insert:
@@ -125,30 +171,39 @@ Insert:
 Description=Start Camera App on boot
 After=multi-user.target
 [Service]
-ExecStart=/home/admin/camera_app/start_camera.sh
+ExecStart=/home/admin/yumiko/camera_app/start_camera.sh
 Restart=always
 User=admin
 Environment=DISPLAY=:0
-WorkingDirectory=/home/admin/camera_app
+WorkingDirectory=/home/admin/yumiko/camera_app
 [Install]
 WantedBy=multi-user.target
 ```
 Then:
-```sh
+```
 sudo systemctl enable start_camera.service
 sudo reboot
 ```
 
 ---
 
-## Hotspot Setup (Optional)
+## Hotspot Setup
 
 ### 1. Install WiFi Driver
 
-```sh
+Install WiFi Driver according to your WiFi Adapter. In our case:
+```
 git clone https://github.com/clnhub/rtl8192eu-linux.git
 cd rtl8192eu-linux
-# Edit Makefile: set CONFIG_PLATFORM_ARM_RPI = y
+sudo nano /home/admin/rtl8192eu-arm-linux-driver/Makefile
+```
+Edit Makefile to this:
+```
+CONFIG_PLATFORM_I386_PC = n
+CONFIG_PLATFORM_ARM_RPI = y
+```
+Install drivers:
+```
 make clean
 make
 sudo make install
@@ -156,12 +211,13 @@ sudo make install
 
 ### 2. Configure Network
 
-```sh
+```
 sudo tee /etc/systemd/network/wlan1.network <<EOF
 [Match]
 Name=wlan1
 [Network]
 Address=192.168.50.1/24
+DHCP=no
 EOF
 
 sudo systemctl enable systemd-networkd
@@ -170,7 +226,7 @@ sudo systemctl restart systemd-networkd
 
 ### 3. Configure Access Point
 
-```sh
+```
 sudo tee /etc/hostapd/hostapd.conf <<EOF
 interface=wlan1
 driver=nl80211
@@ -190,72 +246,33 @@ EOF
 sudo sed -i 's|^#DAEMON_CONF=.*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 sudo systemctl unmask hostapd
 sudo systemctl enable hostapd
-sudo systemctl start hostapd
-```
-
-### 4. DHCP with dnsmasq
-
-```sh
-sudo tee /etc/dnsmasq.conf <<EOF
-interface=wlan1
-dhcp-range=192.168.50.10,192.168.50.100,12h
-EOF
-
-sudo systemctl enable dnsmasq
-sudo systemctl start dnsmasq
-```
-
-### 5. WiFi Management
-
-```sh
 sudo systemctl enable wpa_supplicant@wlan0
 sudo systemctl start wpa_supplicant@wlan0
 sudo systemctl stop wpa_supplicant@wlan1
 sudo systemctl disable wpa_supplicant@wlan1
 ```
 
-```sh
-sudo nano /etc/NetworkManager/conf.d/unmanaged.conf
+### 4. DHCP with dnsmasq
+
 ```
-and insert:
+sudo tee /etc/dnsmasq.conf <<EOF
+interface=wlan1
+dhcp-range=192.168.50.10,192.168.50.100,1h
+EOF
 ```
-[keyfile]
-unmanaged-devices=interface-name:wlan0
+Last reboot:
+```
+sudo reboot
 ```
 
-Add WiFi
-```
-sudo nano /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-```
-
-and insert:
-```
-country=DE
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-
-network={
-    ssid="SSID"
-    psk="PWD..."
-    key_mgmt=WPA-PSK
-}
-```
-
-Restart everything
-```
-sudo systemctl restart NetworkManager
-sudo systemctl enable --now wpa_supplicant@wlan0
-sudo systemctl restart dnsmasq
-sudo systemctl restart hostapd
-```
-
-
-### Additional: Creating QR Code for easy access to the WiFi
-
+---
 
 ### Additional notes
+We recommend creating a QR Code for easy access to the Raspi-Hotspot
 Gallery and style assets are located in ~/camera_app/assets/
 Photos and stylized images are saved in ~/camera_app/photos/
+
+---
 
 ### Third-Party Assets
 Icons used in this project are mostly licensed under the MIT License.  
@@ -265,3 +282,5 @@ Source and attribution details:
 - [Icon: QR Code](https://www.iconfinder.com/icons/4243314/ux_code_app_qr_icon)
 - [Icon: Galery](https://www.iconfinder.com/icons/4706692/camera_equipment_gallery_photography_picture_icon)
 - [Icon: Trashcan](https://www.iconfinder.com/icons/8664938/trash_can_delete_remove_icon)
+
+---

@@ -250,6 +250,7 @@ sudo systemctl enable wpa_supplicant@wlan0
 sudo systemctl start wpa_supplicant@wlan0
 sudo systemctl stop wpa_supplicant@wlan1
 sudo systemctl disable wpa_supplicant@wlan1
+sudo systemctl start hostapd
 ```
 
 ### 4. DHCP with dnsmasq

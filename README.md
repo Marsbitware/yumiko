@@ -1,130 +1,74 @@
 # Yumiko – Smart AI Camera for Raspberry Pi
-Yumiko is an AI-powered camera app for the Raspberry Pi, combining live camera, style transfer, gallery with navigation, QR code export (tbd), and a fullscreen GUI for touchscreens. Designed for the Pi 4 with Raspberry Pi Camera v3 and a 3.5" LCD touchscreen.
 
-<img width="1078" height="1079" alt="{903085E4-B708-4F75-833A-9FEF5406A891}" src="https://github.com/user-attachments/assets/58f93218-c7d4-4b47-be11-f65979aeebdc" />
-<img width="878" height="877" alt="image" src="https://github.com/user-attachments/assets/433e1437-3586-4a06-8298-4d0971372ad8" />
+Yumiko is an AI-powered camera app for the Raspberry Pi, featuring live preview, AI style transfer, gallery navigation, QR code export, and a fullscreen GUI for touchscreens.  
+Designed for Pi 4 with Raspberry Pi Camera v3 and a 3.5" LCD touchscreen.
 
-Inspiration:
-  - [pi-camera](https://github.com/geerlingguy/pi-camera) by [Jeff Geerling](https://github.com/geerlingguy/)
-  - [PIKON Camera](https://www.kevsrobots.com/blog/pikon-camera.html) by [Kevin McAleer](https://www.kevsrobots.com)
+---
 
-### Features
-- 📷 Live preview via picamera2
-- 🎨 AI Style transfer
-- 📁 Gallery mode with touch navigation
-- 🧙 Magic wand style overlay with GIF loading animation
+## Features
+
+- 📷 Live camera preview (picamera2)
+- 🎨 AI style transfer (OpenAI API)
+- 🖼️ Gallery mode with touch navigation
+- 🧙 Style overlay with GIF loading animation
 - 🔳 QR code for image download
 - ⏹️ GPIO button control
-- 🖼️ Fullscreen GUI on touchscreen
+- 🖥️ Fullscreen GUI for touchscreens
 
-### Instruction Manual
-(tbd)
-
-### Directory Structure
-```
-yumiko/
-├── camera_app/
-│   ├── camera.py             ← Main application
-│   ├── start_camera.sh       ← Start script (for autostart)
-│   ├── server.py             ← Start script (for flask-server)
-│   ├── assets/
-│   │   ├── icons/            ← Gallery, QR, magic wand icons, GIFs, etc.
-│   │   ├── styles/           ← Style image buttons
-│   │   └── test/             ← Test images or debug material
-│   └── photos/               ← Photos + stylized images
-├── requirements.txt          ← Python dependencies
-├── .gitignore                ← Ignored files/folders
-├── README.md                 ← This file
-```
+---
 
 ## Requirements
-- Verified OpenAI account with sufficient funds available and a valid API key
-- Raspberry Pi 4 model B (2 GB RAM or better)
-- Raspberry Pi Camera v3 (other camera modules should work too)
-- 3.5 inch GPIO LCD touchscreen (Joy-IT model here)
+
+- Raspberry Pi 4 Model B (2GB RAM+)
+- Raspberry Pi Camera v3 (other modules may work)
+- 3.5" GPIO LCD touchscreen (in our case: Joy-IT)
 - Raspberry Pi OS (Debian Bookworm 64-bit)
-- microSD card
-- 12mm push button
-- 2x4 2.54 mm female headers
-- USB-C powerbank and USB-C cable to power the Pi
-- Screws and nuts:
-    - M2.5 x 12 mm, 4 pcs, each with nut (for Pi)
-    - M2.5 x 4 mm screws, 4 pcs (for front camera attachment)
-    - M2 x 5 mm screws, 2 pcs (for bottom plate)
-- 3D printed case (STL files in the corresponding directory)
-- Wireless USB Adapter (D-Link DWA-131 N300)
+- OpenAI API key (with credits)
+- microSD card, USB-C powerbank, push button, headers, screws, 3D-printed case
+- Wireless USB Adapter (in our case: D-Link DWA-131 N300)
 
-## Assembly
-(tbd)
+---
 
-## Installation:
-### Raspberry Pi OS Installation
-Write Raspberry Pi OS 64-bit (Bookworm) to microSD card using Raspberry Pi Imager.
+## Quick Installation
 
-Important: Enable SSH and set username (e.g. "admin") during flashing.
+### 1. Flash Raspberry Pi OS
 
-### First login and basic configuration
-Connect via SSH:
-```
+- Use Raspberry Pi Imager to write Raspberry Pi OS 64-bit (Bookworm) to your microSD card.
+- Enable SSH and set a username (e.g. `admin`) during flashing.
+
+### 2. First Boot & Basic Setup
+
+```sh
+# Connect via SSH
 ssh admin@<IP-address>
-```
 
-### Set up WiFi (if desired):
-sudo raspi-config → System Options → Wireless LAN → enter WiFi credentials
-
-### Enable desktop autologin and configure display:
-```
-sudo raspi-config
-```
-→ System Options → Auto Login → Desktop Autologin
-→ Display Options → Screen Blanking → No (disable screensaver)
-```
-sudo reboot
-```
-
-### System updates
-```
+# Update system and install dependencies
 sudo apt update
-```
-IMPORTANT: Do NOT run apt full-upgrade!
-This currently causes issues with the LCD driver and display errors.
+sudo apt install -y python3-pyqt5 python3-opencv libqt5gui5 libqt5widgets5 libqt5core5a libqt5network5 \
+    libjpeg-dev libatlas-base-dev git dkms build-essential raspberrypi-kernel-headers hostapd dnsmasq \
+    xinput-calibrator
 
-### Install and configure display driver
+# (Optional) Enable VNC
+sudo raspi-config  # Interface Options → VNC → Enable
 ```
-sudo rm -rf LCD-show
+
+### 3. Display Driver
+
+```sh
 git clone https://github.com/goodtft/LCD-show.git
 chmod -R 755 LCD-show
 cd LCD-show
-```
-### Install display driver:
-```
 sudo ./LCD35-show
+# (Reboots automatically)
 ```
-This will reboot the pi.
-### If needed, rotate display:
-```
-cd LCD-show
-./rotate.sh 180  # or 90 / 270 depending on your preference
-```
-This will also reboot the pi.
+- To rotate display: `./rotate.sh 180` (or 90/270)
 
-### Enable VNC:
-```
-sudo raspi-config 
-```
-→ Interface Options → VNC → Enable
+### 4. Touchscreen Calibration
 
-Set screen size in VNC GUI 
-(Preferences → Appearance Settings → Defaults → Small recommended)
-
-### Calibrate touchscreen:
-```
-sudo apt install xinput-calibrator
-```
-```
+```sh
 sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
 ```
-Insert or adjust following content:
+Insert:
 ```
 Section "InputClass"
     Identifier      "calibration"
@@ -134,31 +78,20 @@ Section "InputClass"
     Option  "TransformationMatrix" "0 -1 1 -1 0 1 0 0 1"
 EndSection
 ```
-Content may vary depending on your screen and orientation
-reboot after adjusting touchscreen
-```
-sudo reboot
-```
+- Adjust values as needed, then reboot: `sudo reboot`
 
-### Connect camera
-Connect camera according to manufacturer instructions.
+### 5. Camera Setup
 
-### Test command via SSH (with GUI output):
-```
+- Connect the camera as per manufacturer instructions.
+- Test with:
+```sh
 export DISPLAY=:0
 libcamera-hello -t 0 --autofocus-mode continuous --qt-preview
 ```
 
-### Python environment and dependencies
-Install system packages:
-```
-sudo apt update
-sudo apt install -y python3-pyqt5 python3-opencv libqt5gui5 libqt5widgets5 libqt5core5a libqt5network5 libjpeg-dev libatlas-base-dev git dkms build-essential raspberrypi-kernel-headers hostapd dnsmasq
-```
+### 6. Clone & Install Yumiko
 
-### Install Yumiko app
-Download source code (e.g. via git clone or scp):
-```
+```sh
 git clone https://github.com/Marsbitware/yumiko.git
 cd yumiko/camera_app
 python3 -m venv venv --system-site-packages
@@ -167,114 +100,78 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Add OpenAI API key to .env:
-```
+### 7. Configure OpenAI API Key
+
+```sh
 nano ~/camera_app/.env
+# Add:
 OPENAI_API_KEY=<your_api_key>
 ```
 
-### Make script executable:
+### 8. Make Scripts Executable
+
+```sh
+chmod +x ~/camera_app/camera.py ~/camera_app/server.py ~/camera_app/start_camera.sh
 ```
-chmod +x ~/camera_app/camera.py
-chmod +x ~/camera_app/server.py
-chmod +x ~/camera_app/start_camera.sh
-```
-### Create systemd service:
-```
+
+### 9. Autostart with systemd
+
+```sh
 sudo nano /etc/systemd/system/start_camera.service
 ```
-Add content:
+Insert:
 ```
 [Unit]
 Description=Start Camera App on boot
-After=multi-user.target lgpiod.service
-Requires=lgpiod.service
-
+After=multi-user.target
 [Service]
 ExecStart=/home/admin/camera_app/start_camera.sh
 Restart=always
 User=admin
 Environment=DISPLAY=:0
 WorkingDirectory=/home/admin/camera_app
-
 [Install]
 WantedBy=multi-user.target
-Enable service and reboot:
 ```
-```
+Then:
+```sh
 sudo systemctl enable start_camera.service
 sudo reboot
 ```
 
-### Killing the Process if necessary
-```
-pkill -f camera.py
-pkill -f server.py
-```
+---
 
-## Creating the Hotspot
-### Adding Drivers
-```
-cd ~
+## Hotspot Setup (Optional)
+
+### 1. Install WiFi Driver
+
+```sh
 git clone https://github.com/clnhub/rtl8192eu-linux.git
 cd rtl8192eu-linux
-```
-
-Editing Makefile
-```
-sudo nano /home/admin/rtl8192eu-arm-linux-driver/Makefile
-```
-This is how it should look before:
-```
-CONFIG_PLATFORM_I386_PC = y
-CONFIG_PLATFORM_ARM_RPI = n
-```
-
-change it to this:
-```
-CONFIG_PLATFORM_I386_PC = n
-CONFIG_PLATFORM_ARM_RPI = y
-```
-
-```
+# Edit Makefile: set CONFIG_PLATFORM_ARM_RPI = y
 make clean
 make
 sudo make install
 ```
 
-### Configure Hotspot
-go to
-```
-sudo nano /etc/systemd/network/wlan1.network
-```
+### 2. Configure Network
 
-and put in
-
-```
+```sh
+sudo tee /etc/systemd/network/wlan1.network <<EOF
 [Match]
 Name=wlan1
-
 [Network]
 Address=192.168.50.1/24
-#DHCPServer=yes
-```
+EOF
 
-(IP is of course variable, 192.168.50.1/24 is just the one we used)
-
-activating and starting
-```
 sudo systemctl enable systemd-networkd
 sudo systemctl restart systemd-networkd
 ```
 
-### Creating the AccessPoint
-go to/create:
-```
-sudo nano /etc/hostapd/hostapd.conf
-```
+### 3. Configure Access Point
 
-fill it with :
-```
+```sh
+sudo tee /etc/hostapd/hostapd.conf <<EOF
 interface=wlan1
 driver=nl80211
 ssid=YumikoCam
@@ -288,60 +185,36 @@ wpa=2
 wpa_passphrase=yumiko123
 wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
-```
+EOF
 
-Path to config
-```
-sudo nano /etc/default/hostapd
-```
-
-insert/change 
-```
-DAEMON_CONF="/etc/hostapd/hostapd.conf"
-```
-
-
-enable service
-```
+sudo sed -i 's|^#DAEMON_CONF=.*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 sudo systemctl unmask hostapd
 sudo systemctl enable hostapd
 sudo systemctl start hostapd
 ```
 
-### DHCP with dnsmasq
-create config
-```
-sudo nano /etc/dnsmasq.conf
-```
+### 4. DHCP with dnsmasq
 
-and insert: 
-```
+```sh
+sudo tee /etc/dnsmasq.conf <<EOF
 interface=wlan1
 dhcp-range=192.168.50.10,192.168.50.100,12h
-```
-(Again, IP/IP range are variable)
+EOF
 
-
-activating and staring service
-```
 sudo systemctl enable dnsmasq
 sudo systemctl start dnsmasq
 ```
 
+### 5. WiFi Management
 
-wlan0: activate wpa_supplicant
-```
+```sh
 sudo systemctl enable wpa_supplicant@wlan0
 sudo systemctl start wpa_supplicant@wlan0
-```
-
-wlan1: stop and deactivate wpa_supplicant 
-```
 sudo systemctl stop wpa_supplicant@wlan1
 sudo systemctl disable wpa_supplicant@wlan1
 ```
 
-```
+```sh
 sudo nano /etc/NetworkManager/conf.d/unmanaged.conf
 ```
 and insert:

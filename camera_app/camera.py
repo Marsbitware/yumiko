@@ -5,6 +5,7 @@ import time
 import shutil
 import base64
 import requests
+import random
 import io
 import qrcode
 import RPi.GPIO as GPIO
@@ -12,7 +13,7 @@ from dotenv import load_dotenv
 from PIL import Image
 from picamera2 import Picamera2
 from PyQt5.QtWidgets import (
-    QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QSizePolicy,
+    QApplication, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy,
     QStackedLayout, QToolButton, QGridLayout
 )
 from PyQt5.QtCore import (
@@ -44,30 +45,110 @@ api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
 STYLE_PROMPTS = {
-    "studio_ghibli": (
-        "Transform this image so that the people, objects, and landscape appear in the charming and dreamy style "
-        "of a Studio Ghibli animation. Use soft colors, painterly textures, and whimsical lighting typical of classic Ghibli scenes."
-    ),
-    "van_gogh": (
-        "Transform this image so that the people and their clothes, objects, and landscape resemble a painting by Vincent van Gogh. "
-        "Apply thick brush strokes, swirling textures, and vibrant, contrasting colors to evoke the energy and emotion of his style."
-    ),
-    "renaissance": (
-        "Transform this image so that the people and their clothes, objects, and background are reimagined in the style of a Renaissance painting, "
-        "as if painted by Leonardo da Vinci. Use soft light, realistic proportions, and detailed shading to mimic the classical atmosphere."
-    ),
-    "medieval": (
-        "Transform this image so that the scene looks like a medieval piece of art. "
-        "Depict the people and their clothes and objects with flat perspective, rich colors, ornate details, and gold-leaf embellishments on parchment."
-    ),
-    "cyberpunk": (
-        "Transform this image into a futuristic cyberpunk scene. Reimagine the people and their clothes, objects, and environment with neon lights, "
-        "high-tech elements, rain-soaked streets, glowing signs, and a gritty urban atmosphere."
-    ),
-    "fantasy": (
-        "Transform this image into a dreamy fantasy world filled with surreal elements. Reimagine people and their clothes, creatures, and landscapes "
-        "with soft lighting, floating objects, mythical creatures and a magical color palette."
-    ),
+        "zombies": (
+            "Transform this image into a post-apocalyptic zombie scene. Turn people into zombies or survivors with torn clothing, decayed skin, "
+            "and place them in a ruined, eerie environment with destruction and lurking undead."
+        ),
+
+        "lego": (
+            "Transform this image so that all people, objects, and surroundings appear like the colorful, modular LEGO style. "
+            "Use plastic textures, blocky shapes, and bright, toy-like colors typical of a LEGO world."
+        ),
+
+        "simpsons": (
+            "Transform this image into a cartoon universe like that of The Simpsons. Use flat, saturated colors, thick black outlines, "
+            "and exaggerated facial features. Convert characters into yellow-skinned, 2D cartoon figures."
+        ),
+
+        "studio_ghibli": (
+            "Transform this image in the whimsical and dreamlike style of a Studio Ghibli animation. "
+            "Use painterly textures, soft lighting, and magical or natural settings with expressive, gentle character designs."
+        ),
+
+        "cyberpunk": (
+            "Transform this image into a futuristic cyberpunk scene. Use neon lights, dark cityscapes, holograms, and high-tech fashion. "
+            "Incorporate cybernetic enhancements and a gritty, dystopian atmosphere."
+        ),
+
+        "renaissance": (
+            "Transform this image so that the people and their clothes, objects, and background are reimagined in the style of a Renaissance painting, "
+            "as if painted by Leonardo da Vinci. Use soft light, realistic proportions, and detailed shading to mimic the classical atmosphere."
+        ),
+
+        "mafiosi": (
+            "Transform this image into a 1920s - 1940s mafia theme. Dress people in vintage suits, trench coats, and fedoras. "
+            "Add smoky clubs, old cars, or dark alleyways with a noir-inspired atmosphere."
+        ),
+
+        "oval_office": (
+            "Transform this image so that the scene takes place in the Oval Office of the White House. Use formal attire, U.S. flags, "
+            "and presidential decor to evoke power, politics, and leadership."
+        ),
+
+        "roman_empire": (
+            "Transform this image into the world of Ancient Rome. Dress people in togas, tunics, or Roman military gear. "
+            "Include marble columns, grand statues, and classical Roman architecture."
+        ),
+
+        "samurai": (
+            "Transform this image into the world of feudal Japan. Dress people in traditional samurai armor or kimonos, and include katana swords, "
+            "temples, or misty mountain landscapes with a historical Japanese aesthetic."
+        ),
+
+        "manga_bw": (
+            "Transform this image into a black-and-white manga drawing. Use clean ink lines, strong contrast, cross-hatching, and expressive facial features. "
+            "Focus on dynamic composition and emotional intensity typical of Japanese manga art."
+        ),
+
+        "van_gogh": (
+            "Transform this image so that people, objects, and the background resemble the style of Vincent van Gogh. Use thick brush strokes, "
+            "vibrant contrasting colors, and swirling, expressive textures to mimic his iconic post-impressionist paintings."
+        ),
+
+        "medieval": (
+            "Transform this image so that the scene looks like a medieval piece of art. "
+            "Depict the people and their clothes and objects with flat perspective, rich colors, ornate details, and gold-leaf embellishments on parchment."
+        ),
+
+        "horror": (
+            "Transform this image into a terrifying horror scene. Use dark lighting, eerie shadows, and unsettling imagery. "
+            "Include a horror figure such as a ghost, demon, or monster lurking or interacting with the scene."
+        ),
+
+        "formula_1": (
+            "Transform this image into a Formula 1 racing theme. Dress people in professional racing suits and helmets, "
+            "and place them near a Formula 1 car, racetrack, checkered flag, or pit lane with a sense of speed and competition."
+        ),
+
+        "steampunk": (
+            "Transform this image into a steampunk world with Victorian fashion fused with futuristic mechanical elements. "
+            "Include brass gears, steam-powered machines, airships, and goggles in a richly detailed alternate reality."
+        ),
+
+        "lord_of_the_rings": (
+            "Transform this image into the fantasy world of The Lord of the Rings. Use medieval clothing, mythic landscapes, and dramatic lighting. "
+            "Include elements like elven forests, stone fortresses, or volcanic terrain, and optionally add Gollum observing or interacting with the scene."
+        ),
+
+        "minecraft": (
+            "Transform this image into the pixelated, blocky world of Minecraft. Convert people, objects, and background into cubic shapes with simple textures. "
+            "Use bright, low-resolution graphics and game-like environments with trees, mountains, or structures made from blocks."
+        ),
+
+        "donald_duck": (
+            "Transform this image into a cartoon world like Donald Duck. Convert people into anthropomorphic, expressive characters with beak-like faces, "
+            "cartoon eyes, and colorful, animated surroundings inspired by classic Disney comic and TV styles."
+        ),
+
+        "cavemen": (
+            "Transform this image into a prehistoric setting featuring cavemen. Dress people in primitive, fur or leather clothing, "
+            "and add stone tools, cave dwellings, and wild natural surroundings like cliffs or jungles."
+        ),
+
+        "star_wars": (
+            "Transform this image into a universe like Star Wars. Style people like Jedi, Sith, stormtroopers, or aliens. "
+            "Include elements such as lightsabers, droids, starships, or desert planets in a sci-fi galactic setting."
+        )
 }
 
 
@@ -115,13 +196,15 @@ class StyleTransferTask(QRunnable):
         except Exception as e:
             self.signals.finished.emit(None, str(e), self.style_name)
 
-FLASK_SERVER = "http://192.168.50.1:5000"  # ❗ Deine Pi-IP hier eintragen
+FLASK_SERVER = "http://192.168.50.1:5000"
 
 class CameraApp(QWidget):
     gpio_button_pressed = pyqtSignal()
 
     def __init__(self):
         super().__init__()
+        self.styles_per_page = 6
+        self.current_style_page = 0
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setGeometry(0, 0, 480, 320)
         self.setWindowTitle("Smart Camera")
@@ -200,7 +283,6 @@ class CameraApp(QWidget):
             self.return_to_camera()
         elif self.current_mode == "camera":
             self.take_photo()
-
     
     def handle_back_or_photo(self):
         print(f"[BUTTON] Current mode: {self.current_mode}")
@@ -219,7 +301,6 @@ class CameraApp(QWidget):
             if self.current_mode in ["gallery", "qr_overlay", "style_overlay"]:
                 self.return_to_camera()
 
-
     def update_preview(self):
         frame = self.picam2.capture_array()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -231,13 +312,14 @@ class CameraApp(QWidget):
 
     def open_gallery(self):
         print("[INFO] Opening gallery")
-        self.image_paths = [
+        files = [
             os.path.join(PHOTOS_DIR, f)
-            for f in sorted(os.listdir(PHOTOS_DIR))
+            for f in os.listdir(PHOTOS_DIR)
             if f.lower().endswith((".jpg", ".png"))
         ]
+        self.image_paths = sorted(files, key=os.path.getmtime, reverse=True)
         if self.image_paths:
-            self.current_index = len(self.image_paths) - 1
+            self.current_index = 0  # Neueste zuerst
             self.show_current_image()
             self.stack.setCurrentWidget(self.gallery_widget)
         self.current_mode = "gallery"
@@ -261,10 +343,13 @@ class CameraApp(QWidget):
         self.picam2.start()
 
         h, w, _ = frame.shape
-        cx, cy = w // 2, h // 2
-        cropped = frame[cy - 512:cy + 512, cx - 512:cx + 512]
-        if cropped.shape[0] != 1024 or cropped.shape[1] != 1024:
-            cropped = cv2.resize(cropped, (1024, 1024), interpolation=cv2.INTER_AREA)
+        crop_size = min(w, h)
+        x1 = (w - crop_size) // 2
+        y1 = (h - crop_size) // 2
+        shift = int(0.10 * crop_size)
+        x1 = max(0, x1 - shift)
+
+        cropped = frame[y1:y1 + crop_size, x1:x1 + crop_size]
 
         filename = f"photo_{int(time.time())}.png"
         filepath = os.path.join(PHOTOS_DIR, filename)
@@ -368,15 +453,14 @@ class CameraApp(QWidget):
             self.show_current_image()
 
     def show_qr_overlay(self):
-        # Make sure the picture aviable
         if not hasattr(self, "current_image_path") or not self.current_image_path:
-            print("[QR] Kein aktuelles Bild gefunden.")
+            print("[QR] No current image found.")
             return
 
         filename = os.path.basename(self.current_image_path)
-        qr_url = f"{FLASK_SERVER}/view/{filename}"  # QR points to HTML Website with picture and Downloadbutton
+        qr_url = f"{FLASK_SERVER}/view/{filename}"
 
-        print(f"[QR] Generiere QR für: {qr_url}")
+        print(f"[QR] Generating QR for: {qr_url}")
         qr = qrcode.QRCode(border=2, box_size=8)
         qr.add_data(qr_url)
         qr.make(fit=True)
@@ -401,7 +485,7 @@ class CameraApp(QWidget):
         qr_label.show()
 
         # Display Info
-        txt = QLabel("📱 Scan den QR-Code\num das Foto anzuzeigen & herunterzuladen", overlay)
+        txt = QLabel("📱 Scan the QR code\nto view & download the photo", overlay)
         txt.setStyleSheet("color: white; font-size: 16px; font-weight: bold;")
         txt.setAlignment(Qt.AlignCenter)
         txt.setGeometry((overlay.width() - 300) // 2, 320, 300, 40)
@@ -414,54 +498,118 @@ class CameraApp(QWidget):
     def show_style_overlay(self):
         print("[AI] Showing style overlay")
         self.clear_gallery_widget()
-        overlay = QWidget(self.gallery_widget)
+
+        overlay = QWidget()
+        overlay.setParent(self.gallery_widget)
         overlay.setGeometry(0, 0, 480, 320)
         overlay.setStyleSheet("background-color: black;")
         overlay.raise_()
 
-        grid = QGridLayout(overlay)
-        grid.setSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-
-        styles = [
+        all_styles = [
+            ("random", "random"),
+            ("zombies", "zombies"),
+            ("lego", "lego"),
+            ("simpsons", "simpsons"),
             ("studio_ghibli", "studio_ghibli"),
-            ("van_gogh", "van_gogh"),
-            ("renaissance", "mona_lisa"),
-            ("medieval", "medieval"),
             ("cyberpunk", "cyberpunk"),
-            ("fantasy", "fantasy"),
+            ("renaissance", "renaissance"),
+            ("mafiosi", "mafiosi"),
+            ("oval_office", "oval_office"),
+            ("roman_empire", "roman_empire"),
+            ("samurai", "samurai"),
+            ("manga_bw", "manga_bw"),
+            ("van_gogh", "van_gogh"),
+            ("medieval", "medieval"),
+            ("horror", "horror"),
+            ("formula_1", "formula_1"),
+            ("steampunk", "steampunk"),
+            ("lord_of_the_rings", "lord_of_the_rings"),
+            ("minecraft", "minecraft"),
+            ("donald_duck", "donald_duck"),
+            ("cavemen", "cavemen"),
+            ("star_wars", "star_wars"),
         ]
 
-        row, col = 0, 0
-        for style_name, file_base in styles:
+        available_styles = []
+        for style_name, file_base in all_styles:
             for ext in [".jpg", ".png"]:
                 path = os.path.join(STYLE_DIR, file_base + ext)
                 if os.path.exists(path):
+                    available_styles.append((style_name, file_base, path))
                     break
-            else:
-                print(f"[WARNING] Style image not found for: {style_name}")
-                continue
 
-            btn = QPushButton()
-            btn.setFixedSize(164, 164)
-            btn.setIconSize(QSize(154, 154))
+        self.style_overlay = overlay
+        self.current_mode = "style_overlay"
+
+        self.styles_per_page = 6
+        start = self.current_style_page * self.styles_per_page
+        end = start + self.styles_per_page
+        styles = available_styles[start:end]
+
+        positions = [
+            (0, 0), (160, 0), (320, 0),
+            (0, 160), (160, 160), (320, 160)
+        ]
+
+        for idx, (style, file_base, path) in enumerate(styles):
+            btn = QPushButton(overlay)
+            btn.setGeometry(positions[idx][0] + 1, positions[idx][1] + 1, 158, 158)
+            btn.setIconSize(QSize(156, 156))
             btn.setStyleSheet(BUTTON_STYLE)
 
             pixmap = QPixmap(path)
-            target_size = QSize(160, 160)
-            cropped = self.crop_and_scale_pixmap(pixmap, target_size)
+            cropped = self.crop_and_scale_pixmap(pixmap, QSize(156, 156))
             btn.setIcon(QIcon(cropped))
 
-            btn.clicked.connect(lambda _, name=style_name: self.apply_style(name))
-            grid.addWidget(btn, row, col)
-            col += 1
-            if col == 3:
-                col = 0
-                row += 1
+            if style == "random":
+                btn.clicked.connect(self.apply_random_style)
+            else:
+                btn.clicked.connect(lambda _, name=style: self.apply_style(name))
+            btn.show()
 
-        self.style_overlay = overlay
+        max_pages = (len(available_styles) - 1) // self.styles_per_page
+
+        # ← Left arrow
+        if self.current_style_page > 0:
+            left_icon = QPixmap(ICON_PATHS["arrow"]).transformed(QTransform().scale(-1, 1))
+            btn_prev = QToolButton(overlay)
+            btn_prev.setIcon(QIcon(left_icon))
+            btn_prev.setIconSize(QSize(96, 96))
+            btn_prev.setFixedSize(120, 120)
+            btn_prev.setStyleSheet(BUTTON_STYLE)
+            btn_prev.move(0, 100)
+            btn_prev.clicked.connect(self.prev_style_page)
+            btn_prev.raise_()
+            btn_prev.show()
+
+        # → Right arrow
+        if self.current_style_page < max_pages:
+            right_icon = QPixmap(ICON_PATHS["arrow"])
+            btn_next = QToolButton(overlay)
+            btn_next.setIcon(QIcon(right_icon))
+            btn_next.setIconSize(QSize(96, 96))
+            btn_next.setFixedSize(120, 120)
+            btn_next.setStyleSheet(BUTTON_STYLE)
+            btn_next.move(480 - 120, 100)
+            btn_next.clicked.connect(self.next_style_page)
+            btn_next.raise_()
+            btn_next.show()
+
         overlay.show()
-        self.current_mode = "style_overlay"
+
+    def apply_random_style(self):
+        style_names = list(STYLE_PROMPTS.keys())
+        random_style = random.choice(style_names)
+        print(f"[STYLE] randomly chosen style: {random_style}")
+        self.apply_style(random_style)
+
+    def next_style_page(self):
+        self.current_style_page += 1
+        self.show_style_overlay()
+
+    def prev_style_page(self):
+        self.current_style_page -= 1
+        self.show_style_overlay()
 
     def show_loading_overlay(self):
         if self.loading_overlay:
@@ -472,7 +620,6 @@ class CameraApp(QWidget):
         self.loading_overlay.setStyleSheet("background-color: white;")
         self.loading_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
 
-        # GIF fullscreen
         self.loading_gif_label = QLabel(self.loading_overlay)
         self.loading_gif_label.setGeometry(0, 0, 480, 320)
         self.loading_gif_label.setAlignment(Qt.AlignCenter)
@@ -486,11 +633,9 @@ class CameraApp(QWidget):
         self.loading_text_label = QLabel("Yumiko is dreaming...", self.loading_overlay)
         self.loading_text_label.setAlignment(Qt.AlignCenter)
 
-        # Größe und Position
         self.loading_text_label.resize(320, 40)
-        self.loading_text_label.move(80, 270)  # zentriert (480 - 320) / 2 = 80
+        self.loading_text_label.move(80, 270)
 
-        # Stil: abgerundet, leichter Rahmen, weiches Pastellgelb
         self.loading_text_label.setStyleSheet(
             "background-color: rgba(255, 255, 210, 200);"
             "color: black;"

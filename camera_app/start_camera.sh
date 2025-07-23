@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ~/venv/bin/activate
+source ~/yumiko/camera_app/venv/bin/activate
 
 export DISPLAY=:0
 

@@ -32,8 +32,8 @@ yumiko/
 │   │   ├── icons/            ← Gallery, QR, magic wand icons, GIFs, etc.
 │   │   ├── styles/           ← Style image buttons
 │   │   └── test/             ← Test images or debug material
-│   └── photos/               ← Photos + stylized images
-├── requirements.txt          ← Python dependencies
+│   │ photos/               ← Photos + stylized images
+│   └── requirements.txt          ← Python dependencies
 ├── .gitignore                ← Ignored files/folders
 ├── README.md                 ← This file
 ```
@@ -137,7 +137,7 @@ libcamera-hello -t 0 --autofocus-mode continuous --qt-preview
 
 ```
 git clone https://github.com/Marsbitware/yumiko.git
-cd yumiko/
+cd yumiko/camera_app/
 python3 -m venv venv --system-site-packages
 source venv/bin/activate
 pip install --upgrade pip

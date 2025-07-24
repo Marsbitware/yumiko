@@ -219,6 +219,8 @@ sudo make install
 ```
 
 ### 2. Configure Network
+- Reconfigure the network connection used by the Raspberry Pi to access the internet, as we are switching network managers. The hotspot configuration will be handled at a later stage.
+- Ensure that you replace "YourSSID" and "YourPassword" with the appropriate credentials.
 ```
 sudo tee /etc/wpa_supplicant/wpa_supplicant-wlan0.conf <<EOF
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -226,8 +228,8 @@ update_config=1
 country=DE
 
 network={
-    ssid="DeinSSID"
-    psk="DeinPasswort"
+    ssid="YourSSID"
+    psk="YourPassword"
 }
 EOF
 

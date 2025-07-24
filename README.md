@@ -209,6 +209,7 @@ CONFIG_PLATFORM_ARM_RPI = y
 ```
 Install drivers:
 ```
+cd /home/admin/rtl8192eu-linux
 make clean
 make
 sudo make install

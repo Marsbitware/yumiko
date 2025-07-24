@@ -249,7 +249,7 @@ sudo systemctl enable wpa_supplicant@wlan0
 sudo systemctl start wpa_supplicant@wlan0
 
 sudo systemctl enable systemd-networkd
-sudo systemctl restart systemd-networkd
+sudo reboot
 ```
 
 ### 3. Configure Access Point

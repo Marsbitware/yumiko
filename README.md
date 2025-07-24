@@ -83,8 +83,6 @@ sudo apt install -y python3-pyqt5 python3-opencv libqt5gui5 libqt5widgets5 libqt
     libjpeg-dev libatlas-base-dev git dkms build-essential raspberrypi-kernel-headers hostapd dnsmasq \
     xinput-calibrator
 
-# (Optional) Enable VNC
-sudo raspi-config  # Interface Options → VNC → Enable
 ```
 
 ### 3. Display Driver
@@ -121,6 +119,9 @@ EndSection
 ```
 Then:
 ```
+# (Optional) Enable VNC
+sudo raspi-config  # Interface Options → VNC → Enable
+
 sudo reboot
 ```
 
@@ -269,9 +270,19 @@ sudo reboot
 ---
 
 ### Additional notes
-We recommend creating a QR Code for easy access to the Raspi-Hotspot
-Gallery and style assets are located in ~/camera_app/assets/
-Photos and stylized images are saved in ~/camera_app/photos/
+- We recommend creating a QR Code for easy access to the Raspi-Hotspot
+- Gallery and style assets are located in ~/yumiko/assets/
+- Photos and stylized images are saved in ~/yumiko/camera_app/photos/
+- If you are using a different user than admin, make sure to update all relevant paths and usernames in the code and scripts accordingly. This includes things like:
+```
+File paths (e.g., /home/admin/...)
+
+Systemd service configuration (User=admin)
+
+Virtual environment locations (/home/admin/yumiko/...)
+
+#Failing to update these may cause the application to break or not start properly.
+```
 
 ---
 

@@ -30,6 +30,10 @@ ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 PHOTOS_DIR = os.path.join(BASE_DIR, "photos")
 STYLE_DIR = os.path.join(ASSETS_DIR, "styles")
 
+# Ensure directories exist
+os.makedirs(PHOTOS_DIR, exist_ok=True)
+os.makedirs(STYLE_DIR, exist_ok=True)
+
 # Icons
 ICON_PATHS = {
     "gallery": os.path.join(ASSETS_DIR, "icons", "gallery.png"),

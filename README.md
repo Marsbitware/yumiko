@@ -200,7 +200,7 @@ Install WiFi Driver according to your WiFi Adapter. In our case:
 ```
 git clone https://github.com/clnhub/rtl8192eu-linux.git
 cd rtl8192eu-linux
-sudo nano /home/admin/rtl8192eu-arm-linux-driver/Makefile
+sudo nano /home/admin/rtl8192eu-linux/Makefile
 ```
 Edit Makefile to this:
 ```

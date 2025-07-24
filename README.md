@@ -98,7 +98,9 @@ sudo ./LCD35-show
 To rotate display:
 ```
 cd LCD-show
-./rotate.sh 180 (or 90/270)
+./rotate.sh 180 #(or 90/270)
+# (also reboots automatically)
+
 ```
 
 ### 4. Touchscreen Calibration

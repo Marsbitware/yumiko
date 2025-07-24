@@ -245,6 +245,9 @@ Address=192.168.50.1/24
 DHCP=no
 EOF
 
+sudo systemctl enable wpa_supplicant@wlan0
+sudo systemctl start wpa_supplicant@wlan0
+
 sudo systemctl enable systemd-networkd
 sudo systemctl restart systemd-networkd
 ```
@@ -271,8 +274,6 @@ EOF
 sudo sed -i 's|^#DAEMON_CONF=.*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 sudo systemctl unmask hostapd
 sudo systemctl enable hostapd
-sudo systemctl enable wpa_supplicant@wlan0
-sudo systemctl start wpa_supplicant@wlan0
 sudo systemctl stop wpa_supplicant@wlan1
 sudo systemctl disable wpa_supplicant@wlan1
 sudo systemctl start hostapd

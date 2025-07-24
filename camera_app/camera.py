@@ -230,10 +230,11 @@ class CameraApp(QWidget):
         self.label = QLabel()
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.label.setStyleSheet("background-color: black;")  # Optional, für schwarzen Rand
+
         camera_layout = QVBoxLayout(self.camera_widget)
         camera_layout.setContentsMargins(0, 0, 0, 0)
         camera_layout.addWidget(self.label)
-        QVBoxLayout(self.camera_widget).addWidget(self.label)
 
         self.stack.addWidget(self.camera_widget)
         self.stack.addWidget(self.gallery_widget)
@@ -309,10 +310,28 @@ class CameraApp(QWidget):
         frame = self.picam2.capture_array()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         h, w, ch = frame.shape
+
+        # Crop to 3:2 aspect ratio (480x320)
+        target_aspect = 480 / 320
+        frame_aspect = w / h
+
+        if frame_aspect > target_aspect:
+            # Image is too wide, crop left/right
+            new_w = int(h * target_aspect)
+            x1 = (w - new_w) // 2
+            frame = frame[:, x1:x1+new_w]
+            w = new_w
+        else:
+            # Image is too tall, crop top/bottom
+            new_h = int(w / target_aspect)
+            y1 = (h - new_h) // 2
+            frame = frame[y1:y1+new_h, :]
+            h = new_h
+
         bytes_per_line = ch * w
         qt_image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(qt_image)
-        self.label.setPixmap(pixmap.scaled(self.label.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        self.label.setPixmap(pixmap.scaled(480, 320, Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
 
     def open_gallery(self):
         print("[INFO] Opening gallery")
@@ -323,7 +342,7 @@ class CameraApp(QWidget):
         ]
         self.image_paths = sorted(files, key=os.path.getmtime, reverse=True)
         if self.image_paths:
-            self.current_index = 0  # Neueste zuerst
+            self.current_index = 0
             self.show_current_image()
             self.stack.setCurrentWidget(self.gallery_widget)
         self.current_mode = "gallery"
@@ -501,6 +520,7 @@ class CameraApp(QWidget):
 
     def show_style_overlay(self):
         print("[AI] Showing style overlay")
+        self.current_style_page = 0
         self.clear_gallery_widget()
 
         overlay = QWidget()

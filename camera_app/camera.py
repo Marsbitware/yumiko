@@ -23,6 +23,7 @@ from PyQt5.QtGui import QImage, QPixmap, QIcon, QTransform, QMovie
 from openai import OpenAI
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt
+from functools import partial
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -208,7 +209,6 @@ class CameraApp(QWidget):
     def __init__(self):
         super().__init__()
         self.styles_per_page = 6
-        self.current_style_page = 0
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setGeometry(0, 0, 480, 320)
         self.setWindowTitle("Smart Camera")
@@ -278,17 +278,6 @@ class CameraApp(QWidget):
         print("[BUTTON] GPIO 21 pressed")
         self.gpio_button_pressed.emit()
 
-    def handle_back_or_photo(self):
-        print(f"[BUTTON] Current mode: {self.current_mode}")
-        if self.current_mode == "style_overlay":
-            self.open_gallery()
-        elif self.current_mode == "qr_overlay":
-            self.open_gallery()
-        elif self.current_mode == "gallery":
-            self.return_to_camera()
-        elif self.current_mode == "camera":
-            self.take_photo()
-    
     def handle_back_or_photo(self):
         print(f"[BUTTON] Current mode: {self.current_mode}")
         if self.current_mode == "style_overlay":
@@ -520,7 +509,12 @@ class CameraApp(QWidget):
 
     def show_style_overlay(self):
         print("[AI] Showing style overlay")
-        self.current_style_page = 0
+        self.current_style_page = 0 
+
+        if hasattr(self, "style_overlay") and self.style_overlay is not None:
+            self.style_overlay.deleteLater()
+            self.style_overlay = None
+
         self.clear_gallery_widget()
 
         overlay = QWidget()
@@ -588,7 +582,7 @@ class CameraApp(QWidget):
             if style == "random":
                 btn.clicked.connect(self.apply_random_style)
             else:
-                btn.clicked.connect(lambda _, name=style: self.apply_style(name))
+                btn.clicked.connect(partial(self.apply_style, style))
             btn.show()
 
         max_pages = (len(available_styles) - 1) // self.styles_per_page

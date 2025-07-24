@@ -123,7 +123,8 @@ Then:
 ```
 # (Optional) Enable VNC
 sudo raspi-config  # Interface Options → VNC → Enable
-
+```
+```
 sudo reboot
 ```
 

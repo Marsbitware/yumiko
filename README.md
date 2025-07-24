@@ -76,13 +76,14 @@ yumiko/
 ```
 # Connect via SSH
 ssh admin@<IP-address>
+```
 
+```
 # Update system and install dependencies
 sudo apt update
 sudo apt install -y python3-pyqt5 python3-opencv libqt5gui5 libqt5widgets5 libqt5core5a libqt5network5 \
     libjpeg-dev libatlas-base-dev git dkms build-essential raspberrypi-kernel-headers hostapd dnsmasq \
     xinput-calibrator
-
 ```
 
 ### 3. Display Driver

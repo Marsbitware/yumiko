@@ -216,6 +216,20 @@ sudo make install
 ```
 
 ### 2. Configure Network
+```
+sudo tee /etc/wpa_supplicant/wpa_supplicant-wlan0.conf <<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=DE
+
+network={
+    ssid="DeinSSID"
+    psk="DeinPasswort"
+}
+EOF
+
+sudo chmod 600 /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+```
 
 ```
 sudo tee /etc/systemd/network/wlan1.network <<EOF

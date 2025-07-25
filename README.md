@@ -32,10 +32,11 @@ yumiko/
 │   │   ├── icons/            ← Gallery, QR, magic wand icons, GIFs, etc.
 │   │   ├── styles/           ← Style image buttons
 │   │   └── test/             ← Test images or debug material
-│   │ photos/               ← Photos + stylized images
-│   └── requirements.txt          ← Python dependencies
-├── .gitignore                ← Ignored files/folders
-├── README.md                 ← This file
+│   ├── stl_files/            ← stl files for camera case
+│   ├── photos/               ← Photos + stylized images
+│   └── requirements.txt      ← Python dependencies
+├── .gitignore               
+├── README.md                 
 ```
 
 ---
@@ -80,9 +81,8 @@ The enclosure is split into two components:
 - `main_case.stl`
 - `bottom_cover.stl`
 
-You can find both STL files inside the [`enclosure/`](./enclosure) directory.
+You can find both STL files inside the [`stl_files/`](.camera_app/stl_files) directory.
 ## Assembly
-Assembly Instructions
 
 - Begin by soldering the two leads of the 12mm pushbutton to the first and last pins on one of the 2x4 female headers. (In this setup, one lead connects to a ground pin and the other to GPIO pin 21. Depending on your  configuration, the GPIO pin may vary.)
 

@@ -55,13 +55,57 @@ yumiko/
     - M2.5 x 4 mm screws, 4 pcs (for front camera attachment)
     - M2 x 5 mm screws, 2 pcs (for bottom plate)
 - 3D printed case (STL files in the corresponding directory)
+- melt-in thread insert: 1/4 Inch 20UNC
 - Wireless USB Adapter (in our case: D-Link DWA-131 N300)
+  
 
 ---
 
-## Assembly
-(tbd)
+## 🧩 3D-Printed Enclosure
 
+This custom enclosure is based on [Jeff Geerling’s original design](https://github.com/geerlingguy) and has been modified to better suit the Yumiko build.
+
+### 🔧 Modifications
+
+Several changes were made to accommodate additional hardware:
+
+- A **12 mm pushbutton** and a **power bank** have been integrated into the case.
+- The enclosure was **enlarged along the X and Y axes** to fit the power bank, which slightly exceeds the original dimensions.
+- A **reinforced hole** was added to the bottom of the case to support a **melt-in threaded insert** for tripod mounting.
+- An additional **access hole** below the battery allows for easy pressing of the power bank’s power button — making Yumiko simple to turn on and off.
+
+### 📦 Parts
+
+The enclosure is split into two components:
+- `main_case.stl`
+- `bottom_cover.stl`
+
+You can find both STL files inside the [`enclosure/`](./enclosure) directory.
+## Assembly
+Assembly Instructions
+
+- Begin by soldering the two leads of the 12mm pushbutton to the first and last pins on one of the 2x4 female headers. (In this setup, one lead connects to a ground pin and the other to GPIO pin 21. Depending on your  configuration, the GPIO pin may vary.)
+
+- Feed the camera module's ribbon cable through the front slit of the enclosure.
+
+- Mount the camera module inside the case using M2.5 x 4mm screws.
+ 
+
+- Place the Raspberry Pi into the enclosure so that its ports are aligned with the opening on the left side.
+
+- Secure the Raspberry Pi to the four internal standoffs using M2 x 12mm screws inserted from the outside. Fasten them with nuts on the inside, above the Pi board.
+
+- Connect the ribbon cable from the camera to the Pi’s CSI camera port. Make sure the metal contacts on the ribbon face toward the Pi’s port side.
+
+- Insert the pre-soldered pushbutton header onto the GPIO pins, ensuring that one pin goes to ground and the other to GPIO 21. Carefully bend the wires so they do not press against the display module.
+
+- Attach the Waveshare GPIO TFT display directly onto the Raspberry Pi's GPIO header. It should sit flush on top of the Pi 4 Model B.
+
+- Gently position the camera ribbon cable behind the display to keep everything neat.
+
+- Melt the threaded insert into the bottom plate by using a soldering iron (set to 200–250 °C). Gently heat the insert until it sinks into the hole and fuses with the plastic.
+
+- Finally, secure the bottom cover to the main enclosure using two M2 screws.
 ---
 
 ## Quick Installation

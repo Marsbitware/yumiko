@@ -64,7 +64,7 @@ yumiko/
 
 ## 🧩 3D-Printed Enclosure
 
-This custom enclosure is based on [Jeff Geerling’s original design](https://github.com/geerlingguy) and has been modified to better suit the Yumiko build.
+This custom enclosure is based on [Kevin McAleer's and Jeff Geerling’s designs](https://github.com/geerlingguy) and has been modified to better suit the Yumiko build.
 
 ### 🔧 Modifications
 
@@ -81,7 +81,7 @@ The enclosure is split into two components:
 - `main_case.stl`
 - `bottom_cover.stl`
 
-You can find both STL files inside the [`stl_files/`](.camera_app/stl_files) directory.
+You can find both STL files inside the [`stl_files/`](/camera_app/stl_files) directory.
 ## Assembly
 
 - Begin by soldering the two leads of the 12mm pushbutton to the first and last pins on one of the 2x4 female headers. (In this setup, one lead connects to a ground pin and the other to GPIO pin 21. Depending on your  configuration, the GPIO pin may vary.)

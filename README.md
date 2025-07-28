@@ -78,8 +78,8 @@ Several changes were made to accommodate additional hardware:
 ### 📦 Parts
 
 The enclosure is split into two components:
-- `main_case.stl`
-- `bottom_cover.stl`
+- `Main_Case.stl`
+- `Bottom.stl`
 
 You can find both STL files inside the [`stl_files/`](/camera_app/stl_files) directory.
 ## Assembly

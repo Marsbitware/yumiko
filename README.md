@@ -146,7 +146,6 @@ To rotate display:
 ```
 cd LCD-show
 ./rotate.sh 180 #(or 90/270)
-
 ```
 Also reboots automatically
 

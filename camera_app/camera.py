@@ -283,6 +283,9 @@ class CameraApp(QWidget):
         if self.current_mode == "style_overlay":
             self.open_gallery()
         elif self.current_mode == "qr_overlay":
+            if hasattr(self, "qr_overlay") and self.qr_overlay is not None:
+                self.qr_overlay.deleteLater()
+                self.qr_overlay = None
             self.open_gallery()
         elif self.current_mode == "gallery":
             self.return_to_camera()
@@ -469,6 +472,10 @@ class CameraApp(QWidget):
             print("[QR] No current image found.")
             return
 
+        if hasattr(self, "qr_overlay") and self.qr_overlay is not None:
+            self.qr_overlay.deleteLater()
+            self.qr_overlay = None
+
         filename = os.path.basename(self.current_image_path)
         qr_url = f"{FLASK_SERVER}/view/{filename}"
 
@@ -505,14 +512,19 @@ class CameraApp(QWidget):
 
         overlay.show()
 
+        self.qr_overlay = overlay  # <--- Save overlay as attribute
         self.current_mode = "qr_overlay"
 
     def show_style_overlay(self):
         print("[AI] Showing style overlay")
-        self.current_style_page = 0 
+        if self.current_mode != "style_overlay":
+            self.current_style_page = 0
 
         if hasattr(self, "style_overlay") and self.style_overlay is not None:
-            self.style_overlay.deleteLater()
+            try:
+                self.style_overlay.deleteLater()
+            except RuntimeError:
+                pass
             self.style_overlay = None
 
         self.clear_gallery_widget()

@@ -264,78 +264,117 @@ sudo make install
 ### 2. Configure Network
 - Reconfigure the network connection used by the Raspberry Pi to access the internet, as we are switching network managers. The hotspot configuration will be handled at a later stage.
 - Ensure that you replace "YourSSID" and "YourPassword" with the appropriate credentials.
+- Note: It's easier if you assign a static IP address to the Pi's wlan0 interface on the router.
+
+Connect your Pi to WiFi (Multiple WiFis are possible, you can prioritize them with 
+sudo nmcli connection modify SSID1 connection.autoconnect-priority 10
+sudo nmcli connection modify SSID2 connection.autoconnect-priority 5
+the higher the number, the higher the priority)
 ```
-sudo tee /etc/wpa_supplicant/wpa_supplicant-wlan0.conf <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=DE
-
-network={
-    ssid="YourSSID"
-    psk="YourPassword"
-}
-EOF
-
-sudo chmod 600 /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+sudo nmcli dev wifi connect "YourSSID" password "YourPassword" ifname wlan0
 ```
 
+Make sure the NetworkManager only manages wlan0:
 ```
-sudo tee /etc/systemd/network/wlan1.network <<EOF
-[Match]
-Name=wlan1
-[Network]
-Address=192.168.50.1/24
-DHCP=no
-EOF
-
-sudo systemctl enable wpa_supplicant@wlan0
-sudo systemctl start wpa_supplicant@wlan0
-
-sudo systemctl enable systemd-networkd
-sudo reboot
+sudo nano /etc/NetworkManager/conf.d/unmanaged-wlan1.conf
 ```
 
-### 3. Configure Access Point
-
+and insert
 ```
-sudo tee /etc/hostapd/hostapd.conf <<EOF
+[keyfile]
+unmanaged-devices=interface-name:wlan1
+```
+
+
+Configure  hostapd
+```
+sudo nano /etc/hostapd/hostapd.conf
+```
+
+and insert:
+```
 interface=wlan1
 driver=nl80211
 ssid=YumikoCam
 hw_mode=g
 channel=6
 wmm_enabled=0
-macaddr_acl=0
 auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
 wpa_passphrase=yumiko123
 wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
-EOF
-
-sudo sed -i 's|^#DAEMON_CONF=.*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
-sudo systemctl unmask hostapd
-sudo systemctl enable hostapd
-sudo systemctl stop wpa_supplicant@wlan1
-sudo systemctl disable wpa_supplicant@wlan1
-sudo systemctl start hostapd
 ```
 
-### 4. DHCP with dnsmasq
-
+Configure and move dnsmasq:
 ```
-sudo tee /etc/dnsmasq.conf <<EOF
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig
+sudo nano /etc/dnsmasq.conf
+```
+
+and insert:
+```
 interface=wlan1
 dhcp-range=192.168.50.10,192.168.50.100,1h
-EOF
-```
-Last reboot:
-```
-sudo reboot
+domain-needed
+bogus-priv
 ```
 
----
+Tell the daemon where the hostapd config is:
+```
+sudo sed -i 's|^#DAEMON_CONF=.*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
+```
+
+```
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+sudo systemctl restart hostapd
+```
+
+Configure wlan1
+```
+sudo nano /etc/systemd/network/wlan1.network
+```
+
+and insert:
+```
+[Match]
+Name=wlan1
+
+[Network]
+Address=192.168.50.1/24
+DHCPServer=no
+```
+
+Restart everything:
+```
+sudo systemctl enable systemd-networkd
+sudo systemctl restart systemd-networkd
+sudo systemctl restart hostapd
+sudo systemctl restart dnsmasq
+```
+
+Ensure that dnsmasq starts only after hostapd has successfully launched:
+```
+sudo mkdir -p /etc/systemd/system/dnsmasq.service.d
+sudo nano /etc/systemd/system/dnsmasq.service.d/override.conf
+```
+
+and insert:
+```
+[Unit]
+After=hostapd.service
+Requires=hostapd.service
+```
+
+and restart
+```
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl restart dnsmasq
+```
+
 
 ### Additional notes
 - We recommend creating a QR Code for easy access to the Raspi-Hotspot

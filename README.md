@@ -405,3 +405,5 @@ Source and attribution details:
 - [Icon: Trashcan](https://www.iconfinder.com/icons/8664938/trash_can_delete_remove_icon)
 
 ---
+
+<img src="camera_app/assets/yumiko_sticker.png" alt="yumiko_sticker.png" width="50%">

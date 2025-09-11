@@ -69,7 +69,7 @@ yumiko/
 
 ## 3D-Printed Enclosure
 
-This custom enclosure is based on [Kevin McAleer's and Jeff Geerling’s designs](https://github.com/geerlingguy) and has been modified to better suit the Yumiko build.
+This custom enclosure is based on [Kevin McAleer's](https://www.kevsrobots.com/blog/pikon-camera.html) and [Jeff Geerling’s](https://github.com/geerlingguy/pi-camera) designs and has been modified to better suit the Yumiko build.
 
 ### Modifications
 

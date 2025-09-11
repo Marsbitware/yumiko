@@ -64,11 +64,11 @@ yumiko/
 
 ---
 
-## 🧩 3D-Printed Enclosure
+## 3D-Printed Enclosure
 
 This custom enclosure is based on [Kevin McAleer's and Jeff Geerling’s designs](https://github.com/geerlingguy) and has been modified to better suit the Yumiko build.
 
-### 🔧 Modifications
+### Modifications
 
 Several changes were made to accommodate additional hardware:
 
@@ -77,7 +77,7 @@ Several changes were made to accommodate additional hardware:
 - A **reinforced hole** was added to the bottom of the case to support a **melt-in threaded insert** for tripod mounting.
 - An additional **access hole** below the battery allows for easy pressing of the power bank’s power button — making Yumiko simple to turn on and off.
 
-### 📦 Parts
+### Parts
 
 The enclosure is split into two components:
 - `Main_Case.stl`

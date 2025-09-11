@@ -3,6 +3,8 @@
 Yumiko is an AI-powered camera app for the Raspberry Pi, featuring live preview, AI style transfer, gallery navigation, QR code export, and a fullscreen GUI for touchscreens.  
 Designed for Pi 4 with Raspberry Pi Camera v3 and a 3.5" LCD touchscreen.
 
+![cam-assembled.jpg](camera_app/assets/cam-assembled.jpg)
+
 Inspiration:
   - [pi-camera](https://github.com/geerlingguy/pi-camera) by [Jeff Geerling](https://github.com/geerlingguy/)
   - [PIKON Camera](https://www.kevsrobots.com/blog/pikon-camera.html) by [Kevin McAleer](https://www.kevsrobots.com)
@@ -11,13 +13,13 @@ Inspiration:
 
 ## Features
 
-- 📷 Live camera preview (picamera2)
-- 🎨 AI style transfer (OpenAI API)
-- 🖼️ Gallery mode with touch navigation
-- 🧙 Style overlay with GIF loading animation
-- 🔳 QR code for image download
-- ⏹️ GPIO button control
-- 🖥️ Fullscreen GUI for touchscreens
+- Live camera preview (picamera2)
+- AI style transfer (OpenAI API)
+- Gallery mode with touch navigation
+- Style overlay with GIF loading animation
+- QR code for image download
+- GPIO button control
+- Fullscreen GUI for touchscreens
 
 ---
 

@@ -157,6 +157,7 @@ Also reboots automatically
 
 ### 4. Touchscreen Calibration
 
+This step will only necessary if your touch input is inverted.
 ```
 sudo rm /etc/X11/xorg.conf.d/99-calibration.conf
 sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
@@ -243,9 +244,9 @@ sudo reboot
 
 ---
 
-## Hotspot Setup
+## 10. Hotspot Setup
 
-### 1. Install WiFi Driver
+### Install WiFi Driver
 
 Install WiFi Driver according to your WiFi Adapter. In our case:
 ```
@@ -266,7 +267,7 @@ make
 sudo make install
 ```
 
-### 2. Configure Network
+### Configure Network
 - Reconfigure the network connection used by the Raspberry Pi to access the internet, as we are switching network managers. The hotspot configuration will be handled at a later stage.
 - Ensure that you replace "YourSSID" and "YourPassword" with the appropriate credentials.
 - Note: It's easier if you assign a static IP address to the Pi's wlan0 interface on the router.

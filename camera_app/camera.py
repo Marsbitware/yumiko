@@ -230,7 +230,7 @@ class CameraApp(QWidget):
         self.label = QLabel()
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.label.setStyleSheet("background-color: black;")  # Optional, für schwarzen Rand
+        self.label.setStyleSheet("background-color: black;")
 
         camera_layout = QVBoxLayout(self.camera_widget)
         camera_layout.setContentsMargins(0, 0, 0, 0)
@@ -512,7 +512,7 @@ class CameraApp(QWidget):
 
         overlay.show()
 
-        self.qr_overlay = overlay  # <--- Save overlay as attribute
+        self.qr_overlay = overlay 
         self.current_mode = "qr_overlay"
 
     def show_style_overlay(self):

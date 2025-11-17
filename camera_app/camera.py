@@ -128,13 +128,13 @@ STYLE_PROMPTS = {
         ),
     
         "steampunk": (
-            "Recreate this image in a detailed steampunk universe. Maintain the people and composition, but dress them in Victorian-inspired outfits enhanced with for example gears, pipes, 
+            "Recreate this image in a detailed steampunk universe. Maintain the people and composition, but dress them in Victorian-inspired outfits enhanced with for example gears, pipes, "
             " goggles, and steam-powered devices. Don't make the picture too dark. "
         ),
 
         "lord_of_the_rings": (
             "Recreate this image in the world of The Lord of the Rings. Keep faces and poses recognizable, but restyle everyone as elves, dwarves, orcs, or Dúnedain in detailed medieval attire. "
-            "Add a characteristical Background Element of LOTR like Isengart, Eye of Sauron or Bruchtal, etc.. and surround them with bright fantasy scenery instead of too dark tones.”
+            "Add a characteristical Background Element of LOTR like Isengart, Eye of Sauron or Bruchtal, etc.. and surround them with bright fantasy scenery instead of too dark tones. "
         ),
 
         "minecraft": (
@@ -149,7 +149,7 @@ STYLE_PROMPTS = {
 
         "cavemen": (
             "Turn this image into a prehistoric cave tableau. Maintain the original people’s features and layout, dress them in fur or leather outfits, "
-            scatter stone-age tools around, and use a bright, atmospheric cave interior rather than dark shadows. "
+            " scatter stone-age tools around, and use a bright, atmospheric cave interior rather than dark shadows. "
         ),
 
         "star_wars": (

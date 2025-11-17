@@ -52,7 +52,7 @@ client = OpenAI(api_key=api_key)
 STYLE_PROMPTS = {
         "zombies": (
             "Transform this image into a post-apocalyptic zombie scene. Turn people into zombies or survivors with torn clothing, decayed skin, "
-            "and place them in a ruined, eerie environment with destruction and lurking undead."
+            "and place them in a ruined, post-apocaliptic world with destruction and lurking undead. But don't make the picture too dark"
         ),
 
         "lego": (
@@ -66,8 +66,8 @@ STYLE_PROMPTS = {
         ),
 
         "studio_ghibli": (
-            "Transform this image in the whimsical and dreamlike style of a Studio Ghibli animation. "
-            "Use painterly textures, soft lighting, and magical or natural settings with expressive, gentle character designs."
+            "Turn this photo into a Ghibli scene, preserving the original features but transforming the people and the landscape into "
+            "classic Ghibli Style."
         ),
 
         "cyberpunk": (
@@ -76,33 +76,33 @@ STYLE_PROMPTS = {
         ),
 
         "renaissance": (
-            "Transform this image so that the people and their clothes, objects, and background are reimagined in the style of a Renaissance painting, "
-            "as if painted by Leonardo da Vinci. Use soft light, realistic proportions, and detailed shading to mimic the classical atmosphere."
+            "Transform this image so that the people and their clothes, objects, and background are reimagined in the style of a Renaissance painting. "
+            "Use soft light, realistic proportions, and detailed shading to mimic the classical atmosphere."
         ),
 
         "mafiosi": (
-            "Transform this image into a 1920s - 1940s mafia theme. Dress people in vintage suits, trench coats, and fedoras. "
-            "Add smoky clubs, old cars, or dark alleyways with a noir-inspired atmosphere."
+            "Transform this image into a 1920s–1940s mafia scene, keeping the people and composition intact. Dress everyone in period-accurate suits, "
+            "fedoras, and overcoats, and add subtle noir tones and era-specific ambiance. Don't make the picture too dark though. "
         ),
 
         "oval_office": (
-            "Transform this image so that the scene takes place in the Oval Office of the White House. Use formal attire, U.S. flags, "
-            "and presidential decor to evoke power, politics, and leadership."
+            "Place this scene in the Oval Office while preserving the people and their facial features. Add presidential elements, formal suits, U.S. flags, "
+            ", and iconic White House / Oval Office styling."
         ),
 
         "roman_empire": (
-            "Transform this image into the world of Ancient Rome. Dress people in togas, tunics, or Roman military gear. "
-            "Include marble columns, grand statues, and classical Roman architecture."
+            "Transform this image into the world of Ancient Rome. Dress people Roman military gear, while preserving facial features. "
+            "Include things like marble columns, grand statues, or just classical Roman architecture in general. "
         ),
 
         "samurai": (
-            "Transform this image into the world of feudal Japan. Dress people in traditional samurai armor or kimonos, and include katana swords, "
-            "temples, or misty mountain landscapes with a historical Japanese aesthetic."
+            "Transform this image into the world of feudal Japan. Dress people in traditional samurai armor while preserving original features like face or pose. "
+            " Include things like katana swords, temples, or misty mountain landscapes with a historical Japanese aesthetic. Also add a little cherry blossom. "
         ),
 
         "manga_bw": (
-            "Transform this image into a black-and-white manga drawing. Use clean ink lines, strong contrast, cross-hatching, and expressive facial features. "
-            "Focus on dynamic composition and emotional intensity typical of Japanese manga art."
+            "Transform this image into a black-and-white manga drawing. Use clean ink lines, strong contrast, cross-hatching, while preserving original features, "
+            "like face or pose of the people. Focus on dynamic composition and emotional intensity typical of Japanese manga art."
         ),
 
         "van_gogh": (
@@ -112,27 +112,29 @@ STYLE_PROMPTS = {
 
         "medieval": (
             "Transform this image so that the scene looks like a medieval piece of art. "
-            "Depict the people and their clothes and objects with flat perspective, rich colors, ornate details, and gold-leaf embellishments on parchment."
+            "Depict the people and their clothes or landscapes as objects with flat perspective and use rich colors, ornate details, or gold-leaf embellishments on parchment."
+            "Preserve original features of the people like their face or pose. "
         ),
 
         "horror": (
-            "Transform this image into a terrifying horror scene. Use dark lighting, eerie shadows, and unsettling imagery. "
-            "Include a horror figure such as a ghost, demon, or monster lurking or interacting with the scene."
+            "Transform this photo into a dark, fear-inducing horror setting. Retain the recognizable subjects and arrangement, but surround them with eerie shadows, "
+            "unsettling atmosphere, and a well-known horror villain. The people are supposed to look afraid but try to preserve facial features and / or pose of the people. "
+            " Don't make it too dark though. It should still be recognizable. "
         ),
 
         "formula_1": (
-            "Transform this image into a Formula 1 racing theme. Dress people in professional racing suits and helmets, "
-            "and place them near a Formula 1 car, racetrack, checkered flag, or pit lane with a sense of speed and competition."
+            "Transform this image into a Formula 1 racing theme. Dress people in professional racing suits and helmets, while keeping their facial features (-> open helmets or "
+            " helmets being carried) and / or poses. Insert F-1 themed objects like F1-cars, a racetrack, checkered flags, while (more or less) keeping the original composition. "
         ),
-
+    
         "steampunk": (
-            "Transform this image into a steampunk world with Victorian fashion fused with futuristic mechanical elements. "
-            "Include brass gears, steam-powered machines, airships, and goggles in a richly detailed alternate reality."
+            "Recreate this image in a detailed steampunk universe. Maintain the people and composition, but dress them in Victorian-inspired outfits enhanced with for example gears, pipes, 
+            " goggles, and steam-powered devices. Don't make the picture too dark. "
         ),
 
         "lord_of_the_rings": (
-            "Transform this image into the fantasy world of The Lord of the Rings. Use medieval clothing, mythic landscapes, and dramatic lighting. "
-            "Include elements like elven forests, stone fortresses, or volcanic terrain, and optionally add Gollum observing or interacting with the scene."
+            "Recreate this image in the world of The Lord of the Rings. Keep faces and poses recognizable, but restyle everyone as elves, dwarves, orcs, or Dúnedain in detailed medieval attire. "
+            "Add a characteristical Background Element of LOTR like Isengart, Eye of Sauron or Bruchtal, etc.. and surround them with bright fantasy scenery instead of too dark tones.”
         ),
 
         "minecraft": (
@@ -146,13 +148,13 @@ STYLE_PROMPTS = {
         ),
 
         "cavemen": (
-            "Transform this image into a prehistoric setting featuring cavemen. Dress people in primitive, fur or leather clothing, "
-            "and add stone tools, cave dwellings, and wild natural surroundings like cliffs or jungles."
+            "Turn this image into a prehistoric cave tableau. Maintain the original people’s features and layout, dress them in fur or leather outfits, "
+            scatter stone-age tools around, and use a bright, atmospheric cave interior rather than dark shadows. "
         ),
 
         "star_wars": (
-            "Transform this image into a universe like Star Wars. Style people like Jedi, Sith, stormtroopers, or aliens. "
-            "Include elements such as lightsabers, droids, starships, or desert planets in a sci-fi galactic setting."
+            "Convert this photo into a cinematic Star Wars scene. Preserve facial features and composition, depict people as Star Wars characters with "
+            "appropriate outfits, and include starships, lightsabers, droids, and galactic scenery."
         )
 }
 

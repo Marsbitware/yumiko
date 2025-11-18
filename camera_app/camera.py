@@ -118,8 +118,8 @@ STYLE_PROMPTS = {
 
         "horror": (
             "Transform this photo into a dark, fear-inducing horror setting. Retain the recognizable subjects and arrangement, but surround them with eerie shadows, "
-            "unsettling atmosphere, and a well-known horror villain. The people are supposed to look afraid but try to preserve facial features and / or pose of the people. "
-            " Don't make it too dark though. It should still be recognizable. "
+            "unsettling atmosphere, and a well-known horror villain. The people are supposed to look afraid but try to preserve facial features and of the people. "
+            " Don't make it too dark though. It should still be recognizable. You are allowed to change the pose of the people to make them look scared though. "
         ),
 
         "formula_1": (
@@ -133,8 +133,9 @@ STYLE_PROMPTS = {
         ),
 
         "lord_of_the_rings": (
-            "Recreate this image in the world of The Lord of the Rings. Keep faces and poses recognizable, but restyle everyone as elves, dwarves, orcs, or Dúnedain in detailed medieval attire. "
-            "Add a characteristical Background Element of LOTR like Isengart, Eye of Sauron or Bruchtal, etc.. and surround them with bright fantasy scenery instead of too dark tones. "
+            "Recreate this image in a high-fantasy medieval world. Keep faces and poses recognizable, but restyle everyone as elegant forest beings, sturdy mountain folk, fierce warrior tribes, "
+            " or noble ranger-like characters in detailed fantasy attire. Include a distinctive fantasy landmark—such as a towering fortress, a mystical valley city, or a distant volcanic "
+            " stronghold—and surround them with bright, vibrant landscapes. "
         ),
 
         "minecraft": (
@@ -153,8 +154,8 @@ STYLE_PROMPTS = {
         ),
 
         "star_wars": (
-            "Convert this photo into a cinematic Star Wars scene. Preserve facial features and composition, depict people as Star Wars characters with "
-            "appropriate outfits, and include starships, lightsabers, droids, and galactic scenery."
+            "Convert this photo into a cinematic sci-fi fantasy scene. Preserve facial features and composition, style people with futuristic robes, armor, "
+            " or alien traits, and include glowing energy blades, robotic assistants, starships, and epic galactic environments. "
         )
 }
 

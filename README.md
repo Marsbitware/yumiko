@@ -3,6 +3,11 @@
 Yumiko is an AI-powered camera app for the Raspberry Pi, featuring live preview, AI style transfer, gallery navigation, QR code export, and a fullscreen GUI for touchscreens.  
 Designed for Pi 4 with Raspberry Pi Camera v3 and a 3.5" LCD touchscreen.
 
+Yumiko comes from the Japanese yume (夢, “dream”) and -ko (子, “child”), meaning “child of the dream.”
+The name reflects the project’s core idea: turning ambitious concepts into a practical and funny tool.
+
+We hope you enjoy using and testing our Project!
+
 <p align="center">
   <img src="camera_app/assets/cam-assembled.jpg" alt="Cam assembled" width="50%">
 </p>

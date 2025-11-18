@@ -157,7 +157,7 @@ Also reboots automatically
 
 ### 4. Touchscreen Calibration
 
-This step will only necessary if your touch input is inverted.
+This step will only be necessary if your touch input is inverted.
 ```
 sudo rm /etc/X11/xorg.conf.d/99-calibration.conf
 sudo nano /etc/X11/xorg.conf.d/99-calibration.conf

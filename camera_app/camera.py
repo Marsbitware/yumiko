@@ -52,7 +52,7 @@ client = OpenAI(api_key=api_key)
 STYLE_PROMPTS = {
         "zombies": (
             "Transform this image into a post-apocalyptic zombie scene. Turn people into zombies or survivors with torn clothing, decayed skin, "
-            "and place them in a ruined, post-apocaliptic world with destruction and lurking undead. But don't make the picture too dark"
+            "and place them in a ruined, post-apocaliptic world with destruction and lurking undead. Make it realistic but don't make the picture too dark"
         ),
 
         "lego": (

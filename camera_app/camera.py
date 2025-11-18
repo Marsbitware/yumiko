@@ -111,9 +111,9 @@ STYLE_PROMPTS = {
         ),
 
         "medieval": (
-            "Transform this image so that the scene looks like a medieval piece of art. "
-            "Depict the people and their clothes or landscapes as objects with flat perspective and use rich colors, ornate details, or gold-leaf embellishments on parchment."
-            "Preserve original features of the people like their face or pose. "
+            "Transform this image into a piece of naive medieval art. Preserve the original faces and poses, but depict everything in the style "
+            "of medieval marginalia and early bestiary illustrations: flat perspective, awkward proportions, humorous misinterpretations of anatomy, "
+            "and richly colored illuminated manuscript details with gold-leaf accents on parchment."
         ),
 
         "horror": (

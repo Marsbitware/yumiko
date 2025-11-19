@@ -64,7 +64,7 @@ yumiko/
 - Screws and nuts:
     - M2.5 x 12 mm, 4 pcs, each with nut (for Pi)
     - M2.5 x 4 mm screws, 4 pcs (for front camera attachment)
-    - M2 x 5 mm screws, 2 pcs (for bottom plate)
+    - M2 x 5 mm screws, 4 pcs (for bottom plate)
 - 3D printed case (STL files in the corresponding directory)
 - melt-in thread insert: 1/4 Inch 20UNC
 - Wireless USB Adapter (in our case: D-Link DWA-131 N300)
@@ -115,7 +115,7 @@ You can find both STL files inside the [`stl_files/`](/camera_app/stl_files) dir
 
 - Melt the threaded insert into the bottom plate by using a soldering iron (set to 200–250 °C). Gently heat the insert until it sinks into the hole and fuses with the plastic.
 
-- Finally, secure the bottom cover to the main enclosure using two M2 screws.
+- Finally, secure the bottom cover to the main enclosure using four M2 screws.
 ---
 
 ## Quick Installation
